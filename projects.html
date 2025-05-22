@@ -21,7 +21,7 @@
         }
 
         /* Show default cursor on clickable elements */
-        a, button, .clickable {
+        a, button, .clickable, .tabloid {
             cursor: pointer !important;
         }
 
@@ -201,7 +201,7 @@
         .container {
             min-height: 100vh;
             padding: 4rem 2rem 2rem;
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
             position: relative;
             z-index: 1;
@@ -238,125 +238,228 @@
             opacity: 0.8;
         }
 
-        /* Projects Grid */
-        .projects-grid {
-            display: grid;
-            gap: 2rem;
-            margin-bottom: 3rem;
-        }
-
-        .project-card {
-            background: rgba(0, 160, 240, 0.05);
-            border: 2px solid rgba(0, 160, 240, 0.2);
-            border-radius: 20px;
-            padding: 2rem;
-            transition: all 0.3s ease;
-            backdrop-filter: blur(10px);
+        /* Year Section */
+        .year-section {
+            margin-bottom: 4rem;
             opacity: 0;
             animation: fadeInUp 1s ease forwards;
         }
 
-        .project-card:nth-child(1) { animation-delay: 0.7s; }
-        .project-card:nth-child(2) { animation-delay: 0.9s; }
-        .project-card:nth-child(3) { animation-delay: 1.1s; }
-        .project-card:nth-child(4) { animation-delay: 1.3s; }
+        .year-section:nth-child(2) { animation-delay: 0.7s; }
+        .year-section:nth-child(3) { animation-delay: 0.9s; }
+        .year-section:nth-child(4) { animation-delay: 1.1s; }
 
-        .project-card:hover {
-            transform: translateY(-10px);
-            border-color: #00A0F0;
-            box-shadow: 0 20px 40px rgba(0, 160, 240, 0.2);
-            background: rgba(0, 160, 240, 0.1);
+        .year-header {
+            text-align: center;
+            margin-bottom: 3rem;
         }
 
-        .project-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 1rem;
-            flex-wrap: wrap;
-            gap: 1rem;
-        }
-
-        .project-title {
-            font-size: 1.4rem;
+        .year-title {
+            font-size: 2.5rem;
             font-weight: 700;
             color: #00A0F0;
             margin-bottom: 0.5rem;
-            flex: 1;
+            text-shadow: 0 0 20px rgba(0, 160, 240, 0.5);
         }
 
-        .project-date {
+        .year-subtitle {
+            font-size: 1rem;
             color: #66fcf1;
-            font-size: 0.9rem;
-            font-weight: 600;
-            white-space: nowrap;
+            opacity: 0.8;
         }
 
-        .project-links {
+        /* Tabloids Grid */
+        .tabloids-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 3rem;
+            margin-bottom: 2rem;
+        }
+
+        /* Tabloid Container */
+        .tabloid-container {
+            perspective: 1000px;
+            height: 450px;
+        }
+
+        .tabloid {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transform-style: preserve-3d;
+            transition: transform 0.8s cubic-bezier(0.4, 0.0, 0.2, 1);
+            cursor: pointer;
+        }
+
+        .tabloid.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .tabloid-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 20px;
+            overflow: hidden;
+            border: 2px solid rgba(0, 160, 240, 0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        .tabloid-front {
+            background: rgba(0, 160, 240, 0.05);
             display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-            margin-bottom: 1rem;
-        }
-
-        .project-link {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.5rem 1rem;
-            background: rgba(0, 160, 240, 0.1);
-            border: 1px solid rgba(0, 160, 240, 0.3);
-            border-radius: 15px;
-            color: #00A0F0;
-            text-decoration: none;
-            font-size: 0.85rem;
-            font-weight: 600;
+            flex-direction: column;
             transition: all 0.3s ease;
         }
 
-        .project-link:hover {
-            background: rgba(0, 160, 240, 0.2);
+        .tabloid-front:hover {
             border-color: #00A0F0;
+            box-shadow: 0 10px 30px rgba(0, 160, 240, 0.3);
+            transform: translateY(-5px);
+        }
+
+        .tabloid-back {
+            background: rgba(0, 160, 240, 0.1);
+            transform: rotateY(180deg);
+            display: flex;
+            flex-direction: column;
+            padding: 2rem;
+        }
+
+        .tabloid-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #00A0F0;
+            text-align: center;
+            padding: 1.5rem 1rem 1rem;
+            border-bottom: 2px solid rgba(0, 160, 240, 0.2);
+        }
+
+        .tabloid-image {
+            flex: 1;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            position: relative;
+            min-height: 200px;
+        }
+
+        .tabloid-image::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, 0.3) 100%);
+        }
+
+        .tabloid-links {
+            position: absolute;
+            bottom: 1rem;
+            left: 1rem;
+            right: 1rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            z-index: 2;
+        }
+
+        .tabloid-link {
+            padding: 0.5rem 1rem;
+            background: rgba(0, 160, 240, 0.8);
+            border-radius: 15px;
+            color: white;
+            text-decoration: none;
+            font-size: 0.8rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .tabloid-link:hover {
+            background: rgba(0, 160, 240, 1);
             transform: translateY(-2px);
         }
 
-        .project-description {
+        .tabloid-date {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(0, 160, 240, 0.8);
+            padding: 0.5rem 1rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            backdrop-filter: blur(10px);
+            z-index: 2;
+        }
+
+        /* Back side content */
+        .tabloid-description {
+            flex: 1;
+            overflow-y: auto;
             margin-bottom: 1.5rem;
         }
 
-        .project-description ul {
+        .tabloid-description h4 {
+            color: #00A0F0;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+
+        .tabloid-description ul {
             list-style: none;
             padding-left: 0;
         }
 
-        .project-description li {
+        .tabloid-description li {
             margin-bottom: 0.8rem;
             position: relative;
             padding-left: 1.5rem;
             color: #e8e8e8;
+            font-size: 0.9rem;
         }
 
-        .project-description li::before {
+        .tabloid-description li::before {
             content: '🚀';
             position: absolute;
             left: 0;
             top: 0;
         }
 
-        .project-skills {
+        .tabloid-skills {
             display: flex;
             flex-wrap: wrap;
             gap: 0.5rem;
-            margin-top: 1rem;
+            margin-top: auto;
         }
 
         .skill-tag {
             padding: 0.4rem 0.8rem;
             background: linear-gradient(45deg, #00A0F0, #0080C7);
-            border-radius: 20px;
-            font-size: 0.8rem;
+            border-radius: 15px;
+            font-size: 0.7rem;
             font-weight: 600;
             color: white;
+        }
+
+        .flip-hint {
+            position: absolute;
+            bottom: 1rem;
+            right: 1rem;
+            background: rgba(0, 160, 240, 0.8);
+            padding: 0.5rem;
+            border-radius: 50%;
+            font-size: 1.2rem;
+            animation: pulse 2s infinite;
+            z-index: 3;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.1); opacity: 1; }
         }
 
         /* More Projects Section */
@@ -366,7 +469,7 @@
             background: rgba(0, 160, 240, 0.05);
             border: 2px solid rgba(0, 160, 240, 0.2);
             border-radius: 20px;
-            margin-top: 2rem;
+            margin-top: 3rem;
             opacity: 0;
             animation: fadeInUp 1s ease 1.5s forwards;
         }
@@ -428,42 +531,26 @@
                 transform: translateX(-85%);
             }
             
-            .nav-buttons {
-                padding: 15px 10px;
-            }
-            
-            .nav-btn {
-                min-width: 120px;
-                font-size: 0.8rem;
-                padding: 10px 15px;
-            }
-            
-            .nav-indicator {
-                width: 25px;
-                height: 50px;
-                right: -12px;
-            }
-            
-            .nav-indicator::before {
-                font-size: 10px;
+            .tabloids-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
             }
 
-            .project-card {
+            .tabloid-container {
+                height: 400px;
+            }
+
+            .tabloid-title {
+                font-size: 1.1rem;
+                padding: 1rem;
+            }
+
+            .tabloid-back {
                 padding: 1.5rem;
             }
 
-            .project-header {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-
-            .project-links {
-                justify-content: flex-start;
-            }
-
-            .project-link {
-                font-size: 0.8rem;
-                padding: 0.4rem 0.8rem;
+            .year-title {
+                font-size: 2rem;
             }
         }
     </style>
@@ -504,145 +591,174 @@
             <p class="page-subtitle">Exploring the cosmos through robotics, AI, and space technology</p>
         </header>
 
-        <!-- Projects Grid -->
-        <div class="projects-grid">
-            <!-- Project 1: L-VITeX -->
-            <div class="project-card">
-                <div class="project-header">
-                    <h3 class="project-title">L-VITeX: Light-Weight Visual Intuition for Terrain Exploration</h3>
-                    <span class="project-date">August 2024 - September 2024</span>
-                </div>
-                
-                <div class="project-links">
-                    <a href="https://arxiv.org/abs/2410.07872" class="project-link" target="_blank">
-                        📄 Paper
-                    </a>
-                    <a href="https://www.linkedin.com/feed/update/urn:li:activity:7251270427266703361/" class="project-link" target="_blank">
-                        🎥 Video (3D Reconstruction)
-                    </a>
-                </div>
-
-                <div class="project-description">
-                    <ul>
-                        <li>Engineered a TinyML-based computationally efficient approach for terrain exploration and visual guidance aimed at resource-constrained explorers and small robot swarms.</li>
-                        <li>Attained up to 99% Region of Interest detection accuracy at less than 200 KB peak RAM occupation.</li>
-                        <li>Executed 3D reconstruction of terrain environments using monocular camera-based Gaussian Splats as a proof of concept.</li>
-                    </ul>
-                </div>
-
-                <div class="project-skills">
-                    <span class="skill-tag">Edge Impulse</span>
-                    <span class="skill-tag">Python</span>
-                    <span class="skill-tag">C++</span>
-                    <span class="skill-tag">TinyML</span>
-                    <span class="skill-tag">Computer Vision</span>
+        <!-- 2024 Projects -->
+        <section class="year-section">
+            <div class="year-header">
+                <h2 class="year-title">2024</h2>
+                <p class="year-subtitle">Advanced TinyML and Terrain Exploration</p>
+            </div>
+            
+            <div class="tabloids-grid">
+                <div class="tabloid-container">
+                    <div class="tabloid" onclick="flipTabloid(this)">
+                        <div class="tabloid-face tabloid-front">
+                            <h3 class="tabloid-title">L-VITeX: Light-Weight Visual Intuition for Terrain Exploration</h3>
+                            <div class="tabloid-image" style="background-image: url('/api/placeholder/400/300');">
+                                <div class="tabloid-date">Aug - Sep 2024</div>
+                                <div class="tabloid-links">
+                                    <a href="https://arxiv.org/abs/2410.07872" class="tabloid-link" target="_blank" onclick="event.stopPropagation()">📄 Paper</a>
+                                    <a href="https://www.linkedin.com/feed/update/urn:li:activity:7251270427266703361/" class="tabloid-link" target="_blank" onclick="event.stopPropagation()">🎥 Video</a>
+                                </div>
+                            </div>
+                            <div class="flip-hint">🔄</div>
+                        </div>
+                        
+                        <div class="tabloid-face tabloid-back">
+                            <h4>Project Details</h4>
+                            <div class="tabloid-description">
+                                <ul>
+                                    <li>Engineered a TinyML-based computationally efficient approach for terrain exploration and visual guidance aimed at resource-constrained explorers and small robot swarms.</li>
+                                    <li>Attained up to 99% Region of Interest detection accuracy at less than 200 KB peak RAM occupation.</li>
+                                    <li>Executed 3D reconstruction of terrain environments using monocular camera-based Gaussian Splats as a proof of concept.</li>
+                                </ul>
+                            </div>
+                            <div class="tabloid-skills">
+                                <span class="skill-tag">Edge Impulse</span>
+                                <span class="skill-tag">Python</span>
+                                <span class="skill-tag">C++</span>
+                                <span class="skill-tag">TinyML</span>
+                                <span class="skill-tag">Computer Vision</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
+        </section>
 
-            <!-- Project 2: Digital Twin Trajectory Planning -->
-            <div class="project-card">
-                <div class="project-header">
-                    <h3 class="project-title">A Digital Twin-Assisted Hybrid Approach to Optimal Trajectory Planning for Serial Manipulators under Temporal Feedback Decay</h3>
-                    <span class="project-date">January 2023 - October 2023</span>
-                </div>
-                
-                <div class="project-links">
-                    <a href="https://drive.google.com/file/d/1dxZbX7z8mD8gAOg_7pLhcbCc7XwhBQOG/view?usp=sharing" class="project-link" target="_blank">
-                        📚 Thesis
-                    </a>
-                    <a href="https://drive.google.com/file/d/1dxZbX7z8mD8gAOg_7pLhcbCc7XwhBQOG/view?usp=sharing" class="project-link" target="_blank">
-                        🎥 Video
-                    </a>
+        <!-- 2023 Projects -->
+        <section class="year-section">
+            <div class="year-header">
+                <h2 class="year-title">2023</h2>
+                <p class="year-subtitle">Digital Twins and Multi-Robot Systems</p>
+            </div>
+            
+            <div class="tabloids-grid">
+                <div class="tabloid-container">
+                    <div class="tabloid" onclick="flipTabloid(this)">
+                        <div class="tabloid-face tabloid-front">
+                            <h3 class="tabloid-title">Digital Twin-Assisted Hybrid Approach to Optimal Trajectory Planning</h3>
+                            <div class="tabloid-image" style="background-image: url('/api/placeholder/400/300');">
+                                <div class="tabloid-date">Jan - Oct 2023</div>
+                                <div class="tabloid-links">
+                                    <a href="https://drive.google.com/file/d/1dxZbX7z8mD8gAOg_7pLhcbCc7XwhBQOG/view?usp=sharing" class="tabloid-link" target="_blank" onclick="event.stopPropagation()">📚 Thesis</a>
+                                    <a href="https://drive.google.com/file/d/1dxZbX7z8mD8gAOg_7pLhcbCc7XwhBQOG/view?usp=sharing" class="tabloid-link" target="_blank" onclick="event.stopPropagation()">🎥 Video</a>
+                                </div>
+                            </div>
+                            <div class="flip-hint">🔄</div>
+                        </div>
+                        
+                        <div class="tabloid-face tabloid-back">
+                            <h4>Project Details</h4>
+                            <div class="tabloid-description">
+                                <ul>
+                                    <li>Developed a ROS-based XGBoost(AI)-assisted twin-sync mechanism to address the temporal decay of actuator feedback for optimal fidelity between the digital twin and physical robot.</li>
+                                </ul>
+                            </div>
+                            <div class="tabloid-skills">
+                                <span class="skill-tag">ROS</span>
+                                <span class="skill-tag">MoveIt</span>
+                                <span class="skill-tag">Python</span>
+                                <span class="skill-tag">C++</span>
+                                <span class="skill-tag">PyTorch</span>
+                                <span class="skill-tag">AutoML</span>
+                                <span class="skill-tag">Linux</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="project-description">
-                    <ul>
-                        <li>Developed a ROS-based XGBoost(AI)-assisted twin-sync mechanism to address the temporal decay of actuator feedback for optimal fidelity between the digital twin and physical robot.</li>
-                    </ul>
-                </div>
-
-                <div class="project-skills">
-                    <span class="skill-tag">ROS</span>
-                    <span class="skill-tag">MoveIt</span>
-                    <span class="skill-tag">Python</span>
-                    <span class="skill-tag">C++</span>
-                    <span class="skill-tag">PyTorch</span>
-                    <span class="skill-tag">AutoML</span>
-                    <span class="skill-tag">Linux</span>
+                <div class="tabloid-container">
+                    <div class="tabloid" onclick="flipTabloid(this)">
+                        <div class="tabloid-face tabloid-front">
+                            <h3 class="tabloid-title">Multi-Robot Collaboration for Exploring Martian Polar Caps</h3>
+                            <div class="tabloid-image" style="background-image: url('/api/placeholder/400/300');">
+                                <div class="tabloid-date">Apr - Aug 2023</div>
+                                <div class="tabloid-links">
+                                    <a href="https://www.linkedin.com/posts/rsr-ogrodoot_irdc2023-robotics-mars-activity-7062290947782422528-g3jI?utm_source=share&utm_medium=member_desktop" class="tabloid-link" target="_blank" onclick="event.stopPropagation()">🤝 Team</a>
+                                    <a href="https://www.linkedin.com/posts/rsr-ogrodoot_irdc2023-robotics-mars-activity-7062290947782422528-g3jI?utm_source=share&utm_medium=member_desktop" class="tabloid-link" target="_blank" onclick="event.stopPropagation()">🎥 Video</a>
+                                </div>
+                            </div>
+                            <div class="flip-hint">🔄</div>
+                        </div>
+                        
+                        <div class="tabloid-face tabloid-back">
+                            <h4>Project Details</h4>
+                            <div class="tabloid-description">
+                                <ul>
+                                    <li>Led a multidisciplinary team to design and develop a multi-robot planetary rover system, achieving 11th place globally in IRDC'23.</li>
+                                    <li>Engineered SAM-based 3D Point Cloud Segmentation to optimize the rovers' visual reconnaissance efficiency.</li>
+                                </ul>
+                            </div>
+                            <div class="tabloid-skills">
+                                <span class="skill-tag">ROS</span>
+                                <span class="skill-tag">C++</span>
+                                <span class="skill-tag">Robotic Simulation</span>
+                                <span class="skill-tag">Point Cloud Processing</span>
+                                <span class="skill-tag">Team Leadership</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
+        </section>
 
-            <!-- Project 3: Multi-Robot Mars Exploration -->
-            <div class="project-card">
-                <div class="project-header">
-                    <h3 class="project-title">Multi-Robot Collaboration for Exploring Martian Polar Caps</h3>
-                    <span class="project-date">April 2023 - August 2023</span>
-                </div>
-                
-                <div class="project-links">
-                    <a href="https://www.linkedin.com/posts/rsr-ogrodoot_irdc2023-robotics-mars-activity-7062290947782422528-g3jI?utm_source=share&utm_medium=member_desktop" class="project-link" target="_blank">
-                        🤝 Team Collaboration
-                    </a>
-                    <a href="https://www.linkedin.com/posts/rsr-ogrodoot_irdc2023-robotics-mars-activity-7062290947782422528-g3jI?utm_source=share&utm_medium=member_desktop" class="project-link" target="_blank">
-                        🎥 Concept Video
-                    </a>
-                </div>
-
-                <div class="project-description">
-                    <ul>
-                        <li>Led a multidisciplinary team to design and develop a multi-robot planetary rover system, achieving 11th place globally in IRDC'23.</li>
-                        <li>Engineered SAM-based 3D Point Cloud Segmentation to optimize the rovers' visual reconnaissance efficiency.</li>
-                    </ul>
-                </div>
-
-                <div class="project-skills">
-                    <span class="skill-tag">ROS</span>
-                    <span class="skill-tag">C++</span>
-                    <span class="skill-tag">Robotic Simulation</span>
-                    <span class="skill-tag">Point Cloud Processing</span>
-                    <span class="skill-tag">Team Leadership</span>
+        <!-- 2022 Projects -->
+        <section class="year-section">
+            <div class="year-header">
+                <h2 class="year-title">2022</h2>
+                <p class="year-subtitle">3D Mapping and Cave Exploration</p>
+            </div>
+            
+            <div class="tabloids-grid">
+                <div class="tabloid-container">
+                    <div class="tabloid" onclick="flipTabloid(this)">
+                        <div class="tabloid-face tabloid-front">
+                            <h3 class="tabloid-title">3D Mapping of Martian Lava Cave & Obstacle Segmentation</h3>
+                            <div class="tabloid-image" style="background-image: url('/api/placeholder/400/300');">
+                                <div class="tabloid-date">Jan - Aug 2022</div>
+                                <div class="tabloid-links">
+                                    <a href="https://github.com/AntarCreates/big_bot_description" class="tabloid-link" target="_blank" onclick="event.stopPropagation()">💻 Code</a>
+                                    <a href="https://github.com/AntarCreates/gs_process/tree/main" class="tabloid-link" target="_blank" onclick="event.stopPropagation()">🔧 Wrapper</a>
+                                    <a href="https://discourse.ros.org/t/ros-news-for-the-week-of-january-23rd-2022/24073" class="tabloid-link" target="_blank" onclick="event.stopPropagation()">📰 ROS News</a>
+                                </div>
+                            </div>
+                            <div class="flip-hint">🔄</div>
+                        </div>
+                        
+                        <div class="tabloid-face tabloid-back">
+                            <h4>Project Details</h4>
+                            <div class="tabloid-description">
+                                <ul>
+                                    <li>Integrated Octomap to reconstruct a simulated Martian lava cave in 3D using a simulated six-wheeled UGV.</li>
+                                    <li>Extended by RANSAC & DBSCAN-based obstacle cluster segmentation in ROS-Gazebo.</li>
+                                    <li>Featured in ROS News for the Week (January 23rd, 2022), showcasing significant contribution to the robotics community.</li>
+                                </ul>
+                            </div>
+                            <div class="tabloid-skills">
+                                <span class="skill-tag">ROS</span>
+                                <span class="skill-tag">Python</span>
+                                <span class="skill-tag">C++</span>
+                                <span class="skill-tag">Octomap</span>
+                                <span class="skill-tag">RANSAC</span>
+                                <span class="skill-tag">DBSCAN</span>
+                                <span class="skill-tag">Gazebo</span>
+                                <span class="skill-tag">Linux</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-
-            <!-- Project 4: 3D Mapping Martian Cave -->
-            <div class="project-card">
-                <div class="project-header">
-                    <h3 class="project-title">3D Mapping of a Martian Lava Cave Simulation & Obstacle Cluster Segmentation based on RANSAC and DBSCAN</h3>
-                    <span class="project-date">January 2022 - August 2022</span>
-                </div>
-                
-                <div class="project-links">
-                    <a href="https://github.com/AntarCreates/big_bot_description" class="project-link" target="_blank">
-                        💻 Code & Video (3D Mapping)
-                    </a>
-                    <a href="https://github.com/AntarCreates/gs_process/tree/main" class="project-link" target="_blank">
-                        🔧 Code (Segmentation Wrapper)
-                    </a>
-                    <a href="https://discourse.ros.org/t/ros-news-for-the-week-of-january-23rd-2022/24073" class="project-link" target="_blank">
-                        📰 ROS News Feature
-                    </a>
-                </div>
-
-                <div class="project-description">
-                    <ul>
-                        <li>Integrated Octomap to reconstruct a simulated Martian lava cave in 3D using a simulated six-wheeled UGV.</li>
-                        <li>Extended by RANSAC & DBSCAN-based obstacle cluster segmentation in ROS-Gazebo.</li>
-                        <li>Featured in ROS News for the Week (as of 23 January 2022), showcasing significant contribution to the robotics community.</li>
-                    </ul>
-                </div>
-
-                <div class="project-skills">
-                    <span class="skill-tag">ROS</span>
-                    <span class="skill-tag">Python</span>
-                    <span class="skill-tag">C++</span>
-                    <span class="skill-tag">Octomap</span>
-                    <span class="skill-tag">RANSAC</span>
-                    <span class="skill-tag">DBSCAN</span>
-                    <span class="skill-tag">Gazebo</span>
-                    <span class="skill-tag">Linux</span>
-                </div>
-            </div>
-        </div>
+        </section>
 
         <!-- More Projects Section -->
         <div class="more-projects">
@@ -657,7 +773,6 @@
     <script>
         // Custom UFO Cursor Management
         const cursor = document.querySelector('.cursor');
-        let isOverClickable = false;
 
         document.addEventListener('mousemove', (e) => {
             cursor.style.left = e.clientX + 'px';
@@ -665,89 +780,8 @@
         });
 
         // Hide UFO cursor when hovering over clickable elements
-        const clickableElements = document.querySelectorAll('a, button, .clickable');
+        const clickableElements = document.querySelectorAll('a, button, .clickable, .tabloid');
         
         clickableElements.forEach(element => {
             element.addEventListener('mouseenter', () => {
                 cursor.style.opacity = '0';
-                isOverClickable = true;
-            });
-            
-            element.addEventListener('mouseleave', () => {
-                cursor.style.opacity = '1';
-                isOverClickable = false;
-            });
-        });
-
-        // Generate Stars
-        function createStars() {
-            const starsContainer = document.querySelector('.stars');
-            const starCount = 200;
-            
-            for (let i = 0; i < starCount; i++) {
-                const star = document.createElement('div');
-                star.className = 'star';
-                star.style.left = Math.random() * 100 + '%';
-                star.style.top = Math.random() * 100 + '%';
-                star.style.animationDelay = Math.random() * 2 + 's';
-                star.style.animationDuration = (Math.random() * 3 + 1) + 's';
-                starsContainer.appendChild(star);
-            }
-        }
-
-        // Generate Floating Particles
-        function createParticles() {
-            const particlesContainer = document.querySelector('.particles');
-            
-            setInterval(() => {
-                const particle = document.createElement('div');
-                particle.className = 'particle';
-                particle.style.left = Math.random() * 100 + '%';
-                particle.style.animationDuration = (Math.random() * 4 + 4) + 's';
-                particle.style.animationDelay = Math.random() * 2 + 's';
-                particlesContainer.appendChild(particle);
-                
-                setTimeout(() => {
-                    particle.remove();
-                }, 8000);
-            }, 500);
-        }
-
-        // Navigation Management
-        const navButtons = document.querySelectorAll('.nav-btn');
-        
-        // Set active button based on current page
-        const currentPage = window.location.pathname.split('/').pop() || 'index.html';
-        
-        navButtons.forEach(btn => {
-            const btnHref = btn.getAttribute('href');
-            btn.classList.remove('active');
-            
-            if (btnHref === currentPage || 
-                (currentPage === '' && btnHref === 'index.html') ||
-                (currentPage === 'projects.html' && btnHref === 'projects.html')) {
-                btn.classList.add('active');
-            }
-        });
-
-        // Initialize Animations
-        document.addEventListener('DOMContentLoaded', () => {
-            createStars();
-            createParticles();
-        });
-
-        // Smooth scroll behavior for internal links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth'
-                    });
-                }
-            });
-        });
-    </script>
-</body>
-</html>
