@@ -784,7 +784,17 @@
     </div>
 
     <script>
-    <script>
+        // Make flipTabloid globally accessible
+        function flipTabloid(tabloidElement) {
+            console.log('Attempting to flip tabloid:', tabloidElement);
+            if (tabloidElement && tabloidElement.classList) {
+                tabloidElement.classList.toggle('flipped');
+                console.log('Tabloid flipped. Current classes:', tabloidElement.className);
+            } else {
+                console.error('Invalid tabloid element:', tabloidElement);
+            }
+        }
+
         // Custom UFO Cursor Management
         document.addEventListener('DOMContentLoaded', function() {
             const cursor = document.querySelector('.cursor');
@@ -806,17 +816,6 @@
                     cursor.style.opacity = '1';
                 });
             });
-
-            // Tabloid Flip Functionality
-            function flipTabloid(tabloidElement) {
-                console.log('Attempting to flip tabloid:', tabloidElement);
-                if (tabloidElement && tabloidElement.classList) {
-                    tabloidElement.classList.toggle('flipped');
-                    console.log('Tabloid flipped. Current classes:', tabloidElement.className);
-                } else {
-                    console.error('Invalid tabloid element:', tabloidElement);
-                }
-            }
 
             // Generate Stars
             function createStars() {
@@ -868,36 +867,25 @@
                 }
             });
 
-            console.log('DOM loaded, setting up tabloid functionality...');
-            
             // Add click listeners to all Learn More buttons
             const learnMoreButtons = document.querySelectorAll('.flip-hint');
-            console.log('Found Learn More buttons:', learnMoreButtons.length);
-            
-            learnMoreButtons.forEach((button, index) => {
-                console.log('Setting up button', index, ':', button);
+            learnMoreButtons.forEach((button) => {
                 button.addEventListener('click', (e) => {
                     e.stopPropagation();
                     const tabloid = button.closest('.tabloid');
-                    console.log('Learn More button clicked, found tabloid:', tabloid);
                     flipTabloid(tabloid);
                 });
             });
 
             // Add click listeners to tabloids themselves
             const tabloids = document.querySelectorAll('.tabloid');
-            console.log('Found tabloids:', tabloids.length);
-            
-            tabloids.forEach((tabloid, index) => {
-                console.log('Setting up tabloid', index, ':', tabloid);
+            tabloids.forEach((tabloid) => {
                 tabloid.addEventListener('click', (e) => {
                     // Don't flip if clicking on links or buttons
                     if (e.target.tagName === 'A' || e.target.closest('a') || 
                         e.target.tagName === 'BUTTON' || e.target.closest('button')) {
-                        console.log('Clicked on link or button, not flipping');
                         return;
                     }
-                    console.log('Tabloid clicked directly');
                     flipTabloid(tabloid);
                 });
             });
@@ -905,8 +893,6 @@
             // Initialize animations
             createStars();
             createParticles();
-            
-            console.log('Tabloid setup complete!');
 
             // Smooth scroll behavior for internal links
             document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -922,3 +908,5 @@
             });
         });
     </script>
+</body>
+</html>
