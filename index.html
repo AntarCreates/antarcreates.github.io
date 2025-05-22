@@ -1,33 +1,531 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Antar Creates 🚀</title>
-  <style>
-    body {
-      font-family: "Segoe UI", sans-serif;
-      background: #0b0c10;
-      color: #66fcf1;
-      text-align: center;
-      padding: 2em;
-    }
-    h1 {
-      font-size: 2.5em;
-    }
-    p {
-      font-size: 1.2em;
-    }
-    a {
-      color: #45a29e;
-      text-decoration: none;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Antar Mazumder | Space Robotics Engineer 🚀</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #000011;
+            color: #ffffff;
+            overflow-x: hidden;
+            cursor: none;
+        }
+
+        /* Custom Cursor */
+        .cursor {
+            position: fixed;
+            width: 20px;
+            height: 20px;
+            background: radial-gradient(circle, #00A0F0, transparent);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 10000;
+            mix-blend-mode: difference;
+            transition: transform 0.1s ease;
+        }
+
+        /* Space Background */
+        .space-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(ellipse at bottom, #1B2735 0%, #090A0F 100%);
+            z-index: -3;
+        }
+
+        /* Stars Animation */
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+        }
+
+        .star {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 2s infinite alternate;
+        }
+
+        @keyframes twinkle {
+            0% { opacity: 0.3; transform: scale(1); }
+            100% { opacity: 1; transform: scale(1.2); }
+        }
+
+        /* Floating Particles */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: #00A0F0;
+            border-radius: 50%;
+            animation: float 6s infinite linear;
+            box-shadow: 0 0 10px #00A0F0;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-100px) rotate(360deg); opacity: 0; }
+        }
+
+        /* Main Container */
+        .container {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Astronaut Avatar */
+        .avatar-container {
+            position: relative;
+            margin-bottom: 2rem;
+            animation: float-gentle 6s ease-in-out infinite;
+        }
+
+        .avatar {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 3px solid #00A0F0;
+            box-shadow: 0 0 30px rgba(0, 160, 240, 0.5);
+            background: linear-gradient(45deg, #1e3c72, #2a5298);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 60px;
+        }
+
+        @keyframes float-gentle {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        /* Main Title */
+        .title {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, #00A0F0, #66fcf1, #45a29e);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradient-shift 3s ease infinite;
+            text-align: center;
+        }
+
+        @keyframes gradient-shift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Typing Animation */
+        .typing-text {
+            font-size: clamp(1.2rem, 2.5vw, 1.8rem);
+            margin-bottom: 2rem;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .typewriter {
+            border-right: 2px solid #00A0F0;
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0%, 50% { border-color: #00A0F0; }
+            51%, 100% { border-color: transparent; }
+        }
+
+        /* Mission Statement */
+        .mission {
+            max-width: 800px;
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 3rem;
+            opacity: 0;
+            animation: fadeInUp 1s ease 2s forwards;
+            text-align: center;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Tech Stack Icons */
+        .tech-stack {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: center;
+            margin-bottom: 3rem;
+            opacity: 0;
+            animation: fadeInUp 1s ease 2.5s forwards;
+        }
+
+        .tech-icon {
+            width: 60px;
+            height: 60px;
+            background: rgba(0, 160, 240, 0.1);
+            border: 2px solid #00A0F0;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .tech-icon:hover {
+            transform: translateY(-10px) scale(1.1);
+            box-shadow: 0 10px 25px rgba(0, 160, 240, 0.3);
+            background: rgba(0, 160, 240, 0.2);
+        }
+
+        /* Social Links */
+        .social-links {
+            display: flex;
+            gap: 2rem;
+            opacity: 0;
+            animation: fadeInUp 1s ease 3s forwards;
+        }
+
+        .social-link {
+            padding: 12px 24px;
+            background: linear-gradient(45deg, transparent, rgba(0, 160, 240, 0.1));
+            border: 2px solid #00A0F0;
+            border-radius: 30px;
+            color: #ffffff;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .social-link::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .social-link:hover::before {
+            left: 100%;
+        }
+
+        .social-link:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 160, 240, 0.3);
+            background: rgba(0, 160, 240, 0.2);
+        }
+
+        /* Rocket Animation */
+        .rocket {
+            position: fixed;
+            font-size: 2rem;
+            animation: rocket-fly 15s linear infinite;
+            z-index: 0;
+        }
+
+        @keyframes rocket-fly {
+            0% { 
+                transform: translate(-100px, 100vh) rotate(-45deg); 
+                opacity: 0; 
+            }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { 
+                transform: translate(100vw, -100px) rotate(-45deg); 
+                opacity: 0; 
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            .social-links {
+                flex-direction: column;
+                align-items: center;
+                gap: 1rem;
+            }
+            
+            .tech-stack {
+                gap: 0.5rem;
+            }
+            
+            .tech-icon {
+                width: 50px;
+                height: 50px;
+                font-size: 20px;
+            }
+        }
+
+        /* Loading Animation */
+        .loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000011;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            animation: fadeOut 1s ease 3s forwards;
+        }
+
+        .loading-text {
+            font-size: 1.5rem;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+
+        @keyframes fadeOut {
+            to { opacity: 0; visibility: hidden; }
+        }
+    </style>
 </head>
 <body>
-  <h1>Hey, Earthling! 👨‍🚀</h1>
-  <p>I'm Antar — ML Engineer, Space Robotics Enthusiast, Maker.</p>
-  <p>This is my intergalactic portfolio. Stay tuned!</p>
-  <p><a href="https://github.com/AntarCreates">View my GitHub</a></p>
+    <!-- Custom Cursor -->
+    <div class="cursor"></div>
+
+    <!-- Loading Screen -->
+    <div class="loading">
+        <div class="loading-text">🚀 Initializing Mission Control...</div>
+    </div>
+
+    <!-- Space Background -->
+    <div class="space-bg"></div>
+    
+    <!-- Stars -->
+    <div class="stars"></div>
+    
+    <!-- Floating Particles -->
+    <div class="particles"></div>
+
+    <!-- Flying Rocket -->
+    <div class="rocket">🚀</div>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="avatar-container">
+            <div class="avatar">👨‍🚀</div>
+        </div>
+
+        <h1 class="title">Hey, Earthling! Antar here</h1>
+        
+        <div class="typing-text">
+            <span id="typewriter" class="typewriter"></span>
+        </div>
+
+        <div class="mission">
+            I'm an <strong>ML Engineer at FringeCore</strong>, specializing in computer vision with a BSc in Mechatronics Engineering from RUET. My mission is focused on robot perception and digital twin-incorporated robotics, with a strong emphasis on <strong>space robotics</strong> and terrain reconstruction for extraterrestrial exploration.
+        </div>
+
+        <div class="tech-stack">
+            <div class="tech-icon" title="Python">🐍</div>
+            <div class="tech-icon" title="PyTorch">🔥</div>
+            <div class="tech-icon" title="Computer Vision">👁️</div>
+            <div class="tech-icon" title="ROS">🤖</div>
+            <div class="tech-icon" title="3D Modeling">🎯</div>
+            <div class="tech-icon" title="Space Tech">🛰️</div>
+            <div class="tech-icon" title="AI/ML">🧠</div>
+            <div class="tech-icon" title="Robotics">⚙️</div>
+        </div>
+
+        <div class="social-links">
+            <a href="https://github.com/AntarCreates" class="social-link" target="_blank">
+                🚀 GitHub
+            </a>
+            <a href="https://www.linkedin.com/in/antarmazumder" class="social-link" target="_blank">
+                💼 LinkedIn
+            </a>
+            <a href="https://scholar.google.com/citations?user=BfGfzocAAAAJ" class="social-link" target="_blank">
+                📚 Scholar
+            </a>
+            <a href="https://sites.google.com/view/antarbio" class="social-link" target="_blank">
+                🌐 Website
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // Custom Cursor
+        const cursor = document.querySelector('.cursor');
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
+        });
+
+        // Generate Stars
+        function createStars() {
+            const starsContainer = document.querySelector('.stars');
+            const starCount = 200;
+            
+            for (let i = 0; i < starCount; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.animationDelay = Math.random() * 2 + 's';
+                star.style.animationDuration = (Math.random() * 3 + 1) + 's';
+                starsContainer.appendChild(star);
+            }
+        }
+
+        // Generate Floating Particles
+        function createParticles() {
+            const particlesContainer = document.querySelector('.particles');
+            
+            setInterval(() => {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDuration = (Math.random() * 4 + 4) + 's';
+                particle.style.animationDelay = Math.random() * 2 + 's';
+                particlesContainer.appendChild(particle);
+                
+                setTimeout(() => {
+                    particle.remove();
+                }, 8000);
+            }, 500);
+        }
+
+        // Typewriter Effect
+        function typeWriter() {
+            const texts = [
+                'Machine Learning Engineer 🤖',
+                'Space Robotics Researcher 🚀',
+                'Computer Vision Specialist 👁️',
+                'Digital Twin Enthusiast 🌍',
+                'Maker & Innovator ⚡'
+            ];
+            
+            let textIndex = 0;
+            let charIndex = 0;
+            let isDeleting = false;
+            const typewriterElement = document.getElementById('typewriter');
+            
+            function type() {
+                const currentText = texts[textIndex];
+                
+                if (isDeleting) {
+                    typewriterElement.textContent = currentText.substring(0, charIndex - 1);
+                    charIndex--;
+                } else {
+                    typewriterElement.textContent = currentText.substring(0, charIndex + 1);
+                    charIndex++;
+                }
+                
+                let typeSpeed = isDeleting ? 50 : 100;
+                
+                if (!isDeleting && charIndex === currentText.length) {
+                    typeSpeed = 2000;
+                    isDeleting = true;
+                } else if (isDeleting && charIndex === 0) {
+                    isDeleting = false;
+                    textIndex = (textIndex + 1) % texts.length;
+                    typeSpeed = 500;
+                }
+                
+                setTimeout(type, typeSpeed);
+            }
+            
+            type();
+        }
+
+        // Mouse Interaction Effects
+        document.addEventListener('mousemove', (e) => {
+            const particles = document.querySelectorAll('.particle');
+            particles.forEach(particle => {
+                const rect = particle.getBoundingClientRect();
+                const distance = Math.sqrt(
+                    Math.pow(e.clientX - rect.left, 2) + 
+                    Math.pow(e.clientY - rect.top, 2)
+                );
+                
+                if (distance < 100) {
+                    particle.style.transform += ` scale(${1.5 - distance/100})`;
+                }
+            });
+        });
+
+        // Initialize Animations
+        document.addEventListener('DOMContentLoaded', () => {
+            createStars();
+            createParticles();
+            typeWriter();
+            
+            // Add hover effects to tech icons
+            const techIcons = document.querySelectorAll('.tech-icon');
+            techIcons.forEach(icon => {
+                icon.addEventListener('mouseenter', () => {
+                    icon.style.transform = 'translateY(-10px) scale(1.1) rotateY(180deg)';
+                });
+                
+                icon.addEventListener('mouseleave', () => {
+                    icon.style.transform = 'translateY(0) scale(1) rotateY(0deg)';
+                });
+            });
+        });
+
+        // Smooth scroll behavior
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
 </body>
 </html>
