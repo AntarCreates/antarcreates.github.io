@@ -43,28 +43,74 @@
             transform: translate(-50%, -50%);
         }
 
-        /* Navigation Menu */
+        /* Navigation Menu - Sidebar Style */
         .nav-container {
             position: fixed;
-            top: 0;
+            top: 50%;
             left: 0;
-            right: 0;
+            transform: translateY(-50%);
             z-index: 1000;
-            padding: 20px;
+            transition: all 0.3s ease;
         }
 
         .nav-menu {
             display: flex;
-            justify-content: space-between;
+            flex-direction: column;
             align-items: flex-start;
-            max-width: 1200px;
-            margin: 0 auto;
+            transform: translateX(-80%);
+            transition: transform 0.3s ease;
         }
 
-        .nav-left, .nav-right {
+        .nav-menu:hover {
+            transform: translateX(0);
+        }
+
+        .nav-indicator {
+            position: absolute;
+            right: -15px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 30px;
+            height: 60px;
+            background: rgba(0, 160, 240, 0.2);
+            border: 2px solid rgba(0, 160, 240, 0.5);
+            border-left: none;
+            border-radius: 0 15px 15px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .nav-indicator::before {
+            content: '▶';
+            color: #00A0F0;
+            font-size: 12px;
+            transition: transform 0.3s ease;
+        }
+
+        .nav-menu:hover .nav-indicator::before {
+            transform: rotate(180deg);
+        }
+
+        .nav-menu:hover .nav-indicator {
+            background: rgba(0, 160, 240, 0.3);
+            border-color: #00A0F0;
+        }
+
+        .nav-buttons {
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 10px;
+            padding: 20px 15px;
+            background: rgba(0, 11, 17, 0.9);
+            border: 2px solid rgba(0, 160, 240, 0.3);
+            border-left: none;
+            border-radius: 0 20px 20px 0;
+            backdrop-filter: blur(15px);
+            box-shadow: 5px 0 25px rgba(0, 0, 0, 0.3);
         }
 
         .nav-btn {
@@ -77,25 +123,22 @@
             font-weight: 600;
             font-size: 0.9rem;
             transition: all 0.3s ease;
-            backdrop-filter: blur(10px);
-            min-width: 120px;
+            min-width: 140px;
             text-align: center;
+            display: block;
         }
 
         .nav-btn:hover {
-            background: rgba(0, 160, 240, 0.2);
+            background: rgba(0, 160, 240, 0.25);
             border-color: #00A0F0;
             transform: translateX(10px);
-            box-shadow: 0 5px 20px rgba(0, 160, 240, 0.3);
-        }
-
-        .nav-left .nav-btn:hover {
-            transform: translateX(-10px);
+            box-shadow: 0 5px 20px rgba(0, 160, 240, 0.4);
         }
 
         .nav-btn.active {
-            background: rgba(0, 160, 240, 0.3);
+            background: rgba(0, 160, 240, 0.4);
             border-color: #00A0F0;
+            box-shadow: 0 0 15px rgba(0, 160, 240, 0.6);
         }
 
         /* Space Background */
@@ -170,7 +213,6 @@
             padding: 2rem;
             position: relative;
             z-index: 1;
-            margin-top: 80px;
         }
 
         /* Astronaut Avatar */
@@ -385,33 +427,36 @@
         @media (max-width: 768px) {
             .container {
                 padding: 1rem;
-                margin-top: 60px;
             }
             
             .nav-container {
-                padding: 15px;
+                top: 20px;
+                left: 0;
+                transform: none;
             }
             
             .nav-menu {
-                flex-direction: column;
-                align-items: center;
-                gap: 15px;
+                transform: translateX(-85%);
             }
             
-            .nav-left, .nav-right {
-                flex-direction: row;
-                flex-wrap: wrap;
-                justify-content: center;
+            .nav-buttons {
+                padding: 15px 10px;
             }
             
             .nav-btn {
-                min-width: 100px;
+                min-width: 120px;
                 font-size: 0.8rem;
                 padding: 10px 15px;
             }
             
-            .nav-btn:hover, .nav-left .nav-btn:hover {
-                transform: translateY(-5px);
+            .nav-indicator {
+                width: 25px;
+                height: 50px;
+                right: -12px;
+            }
+            
+            .nav-indicator::before {
+                font-size: 10px;
             }
             
             .social-links {
@@ -468,16 +513,15 @@
     <!-- Navigation Menu -->
     <nav class="nav-container">
         <div class="nav-menu">
-            <div class="nav-left">
-                <a href="#home" class="nav-btn active">🏠 Home</a>
-                <a href="#projects" class="nav-btn">🚀 Projects</a>
-                <a href="#research" class="nav-btn">🔬 Research</a>
+            <div class="nav-buttons">
+                <a href="index.html" class="nav-btn active">🏠 Home</a>
+                <a href="projects.html" class="nav-btn">🚀 Projects</a>
+                <a href="research.html" class="nav-btn">🔬 Research</a>
+                <a href="activities.html" class="nav-btn">⚡ Activities</a>
+                <a href="achievements.html" class="nav-btn">🏆 Achievements</a>
+                <a href="contact.html" class="nav-btn">📡 Contact</a>
             </div>
-            <div class="nav-right">
-                <a href="#activities" class="nav-btn">⚡ Activities</a>
-                <a href="#achievements" class="nav-btn">🏆 Achievements</a>
-                <a href="#contact" class="nav-btn">📡 Contact</a>
-            </div>
+            <div class="nav-indicator"></div>
         </div>
     </nav>
 
@@ -572,26 +616,29 @@
             });
         });
 
-        // Navigation Active State Management
+        // Navigation Management
         const navButtons = document.querySelectorAll('.nav-btn');
         
+        // Set active button based on current page
+        const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+        
+        navButtons.forEach(btn => {
+            const btnHref = btn.getAttribute('href');
+            btn.classList.remove('active');
+            
+            if (btnHref === currentPage || 
+                (currentPage === '' && btnHref === 'index.html') ||
+                (currentPage === 'index.html' && btnHref === 'index.html')) {
+                btn.classList.add('active');
+            }
+        });
+
+        // Add click tracking (optional analytics)
         navButtons.forEach(btn => {
             btn.addEventListener('click', (e) => {
-                e.preventDefault();
-                
-                // Remove active class from all buttons
-                navButtons.forEach(b => b.classList.remove('active'));
-                
-                // Add active class to clicked button
-                btn.classList.add('active');
-                
-                // Here you would typically handle page navigation
-                // For now, we'll just log the target
-                const target = btn.getAttribute('href').substring(1);
+                const target = btn.getAttribute('href');
                 console.log(`Navigating to: ${target}`);
-                
-                // You can add page navigation logic here
-                // For example: loadPage(target);
+                // Add any analytics tracking here if needed
             });
         });
 
