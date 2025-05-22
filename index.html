@@ -19,17 +19,16 @@
             cursor: none;
         }
 
-        /* Custom Cursor */
+        /* Custom UFO Cursor */
         .cursor {
             position: fixed;
-            width: 20px;
-            height: 20px;
-            background: radial-gradient(circle, #00A0F0, transparent);
-            border-radius: 50%;
+            width: 30px;
+            height: 30px;
             pointer-events: none;
             z-index: 10000;
-            mix-blend-mode: difference;
             transition: transform 0.1s ease;
+            font-size: 20px;
+            transform: translate(-50%, -50%);
         }
 
         /* Space Background */
@@ -119,11 +118,10 @@
             border-radius: 50%;
             border: 3px solid #00A0F0;
             box-shadow: 0 0 30px rgba(0, 160, 240, 0.5);
-            background: linear-gradient(45deg, #1e3c72, #2a5298);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 60px;
+            background-image: url('files/dp.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
         }
 
         @keyframes float-gentle {
@@ -192,9 +190,9 @@
             flex-wrap: wrap;
             gap: 1rem;
             justify-content: center;
-            margin-bottom: 3rem;
+            margin-bottom: 2rem;
             opacity: 0;
-            animation: fadeInUp 1s ease 2.5s forwards;
+            animation: fadeInUp 1s ease 3.5s forwards;
         }
 
         .tech-icon {
@@ -217,16 +215,64 @@
             background: rgba(0, 160, 240, 0.2);
         }
 
+        /* Resume Download Section */
+        .resume-section {
+            margin-bottom: 3rem;
+            opacity: 0;
+            animation: fadeInUp 1s ease 2.5s forwards;
+        }
+
+        .resume-btn {
+            display: inline-block;
+            padding: 15px 35px;
+            background: linear-gradient(45deg, #00A0F0, #0080C7);
+            border: none;
+            border-radius: 50px;
+            color: #ffffff;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0, 160, 240, 0.3);
+        }
+
+        .resume-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .resume-btn:hover::before {
+            left: 100%;
+        }
+
+        .resume-btn:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 15px 35px rgba(0, 160, 240, 0.4);
+        }
+
         /* Social Links */
         .social-links {
             display: flex;
             gap: 2rem;
+            justify-content: center;
+            margin-bottom: 3rem;
             opacity: 0;
             animation: fadeInUp 1s ease 3s forwards;
         }
 
         .social-link {
-            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 20px;
             background: linear-gradient(45deg, transparent, rgba(0, 160, 240, 0.1));
             border: 2px solid #00A0F0;
             border-radius: 30px;
@@ -236,6 +282,12 @@
             transition: all 0.3s ease;
             position: relative;
             overflow: hidden;
+        }
+
+        .social-link img {
+            width: 24px;
+            height: 24px;
+            filter: brightness(0) invert(1);
         }
 
         .social-link::before {
@@ -259,26 +311,7 @@
             background: rgba(0, 160, 240, 0.2);
         }
 
-        /* Rocket Animation */
-        .rocket {
-            position: fixed;
-            font-size: 2rem;
-            animation: rocket-fly 15s linear infinite;
-            z-index: 0;
-        }
-
-        @keyframes rocket-fly {
-            0% { 
-                transform: translate(-100px, 100vh) rotate(-45deg); 
-                opacity: 0; 
-            }
-            10% { opacity: 1; }
-            90% { opacity: 1; }
-            100% { 
-                transform: translate(100vw, -100px) rotate(-45deg); 
-                opacity: 0; 
-            }
-        }
+        /* Rocket Animation - Removed */
 
         /* Responsive Design */
         @media (max-width: 768px) {
@@ -334,8 +367,8 @@
     </style>
 </head>
 <body>
-    <!-- Custom Cursor -->
-    <div class="cursor"></div>
+    <!-- Custom UFO Cursor -->
+    <div class="cursor">🛸</div>
 
     <!-- Loading Screen -->
     <div class="loading">
@@ -351,13 +384,10 @@
     <!-- Floating Particles -->
     <div class="particles"></div>
 
-    <!-- Flying Rocket -->
-    <div class="rocket">🚀</div>
-
     <!-- Main Content -->
     <div class="container">
         <div class="avatar-container">
-            <div class="avatar">👨‍🚀</div>
+            <div class="avatar"></div>
         </div>
 
         <h1 class="title">Hey, Earthling! Antar here</h1>
@@ -370,6 +400,30 @@
             I'm an <strong>ML Engineer at FringeCore</strong>, specializing in computer vision with a BSc in Mechatronics Engineering from RUET. My mission is focused on robot perception and digital twin-incorporated robotics, with a strong emphasis on <strong>space robotics</strong> and terrain reconstruction for extraterrestrial exploration.
         </div>
 
+        <div class="resume-section">
+            <a href="https://drive.google.com/file/d/1y8eLagk7WGG6UBgkXhPJPQGPhAZo1fi4/view" class="resume-btn" target="_blank">
+                📄 Download My Resume
+            </a>
+        </div>
+
+        <div class="social-links">
+            <a href="https://github.com/AntarCreates" class="social-link" target="_blank">
+                <img src="files/git.png" alt="GitHub">
+                GitHub
+            </a>
+            <a href="https://www.linkedin.com/in/antarmazumder" class="social-link" target="_blank">
+                <img src="files/li.png" alt="LinkedIn">
+                LinkedIn
+            </a>
+            <a href="https://scholar.google.com/citations?user=BfGfzocAAAAJ" class="social-link" target="_blank">
+                <img src="files/gs.png" alt="Google Scholar">
+                Scholar
+            </a>
+            <a href="https://sites.google.com/view/antarbio" class="social-link" target="_blank">
+                🌐 Website
+            </a>
+        </div>
+
         <div class="tech-stack">
             <div class="tech-icon" title="Python">🐍</div>
             <div class="tech-icon" title="PyTorch">🔥</div>
@@ -380,25 +434,10 @@
             <div class="tech-icon" title="AI/ML">🧠</div>
             <div class="tech-icon" title="Robotics">⚙️</div>
         </div>
-
-        <div class="social-links">
-            <a href="https://github.com/AntarCreates" class="social-link" target="_blank">
-                🚀 GitHub
-            </a>
-            <a href="https://www.linkedin.com/in/antarmazumder" class="social-link" target="_blank">
-                💼 LinkedIn
-            </a>
-            <a href="https://scholar.google.com/citations?user=BfGfzocAAAAJ" class="social-link" target="_blank">
-                📚 Scholar
-            </a>
-            <a href="https://sites.google.com/view/antarbio" class="social-link" target="_blank">
-                🌐 Website
-            </a>
-        </div>
     </div>
 
     <script>
-        // Custom Cursor
+        // Custom UFO Cursor
         const cursor = document.querySelector('.cursor');
         document.addEventListener('mousemove', (e) => {
             cursor.style.left = e.clientX + 'px';
