@@ -636,6 +636,7 @@
                                 <span class="skill-tag">TinyML</span>
                                 <span class="skill-tag">Computer Vision</span>
                             </div>
+                            <button class="flip-back" style="margin-top:1rem;align-self:flex-end;">⬅ Back</button>
                         </div>
                     </div>
                 </div>
@@ -682,6 +683,7 @@
                                 <span class="skill-tag">AutoML</span>
                                 <span class="skill-tag">Linux</span>
                             </div>
+                            <button class="flip-back" style="margin-top:1rem;align-self:flex-end;">⬅ Back</button>
                         </div>
                     </div>
                 </div>
@@ -717,6 +719,7 @@
                                 <span class="skill-tag">Point Cloud Processing</span>
                                 <span class="skill-tag">Team Leadership</span>
                             </div>
+                            <button class="flip-back" style="margin-top:1rem;align-self:flex-end;">⬅ Back</button>
                         </div>
                     </div>
                 </div>
@@ -767,6 +770,7 @@
                                 <span class="skill-tag">Gazebo</span>
                                 <span class="skill-tag">Linux</span>
                             </div>
+                            <button class="flip-back" style="margin-top:1rem;align-self:flex-end;">⬅ Back</button>
                         </div>
                     </div>
                 </div>
@@ -786,12 +790,15 @@
     <script>
         // Make flipTabloid globally accessible
         function flipTabloid(tabloidElement) {
-            console.log('Attempting to flip tabloid:', tabloidElement);
             if (tabloidElement && tabloidElement.classList) {
                 tabloidElement.classList.toggle('flipped');
-                console.log('Tabloid flipped. Current classes:', tabloidElement.className);
-            } else {
-                console.error('Invalid tabloid element:', tabloidElement);
+            }
+        }
+
+        // Flip back to front face
+        function flipTabloidBack(tabloidElement) {
+            if (tabloidElement && tabloidElement.classList) {
+                tabloidElement.classList.remove('flipped');
             }
         }
 
@@ -806,14 +813,45 @@
 
             // Hide UFO cursor when hovering over clickable elements
             const clickableElements = document.querySelectorAll('a, button, .clickable, .tabloid');
-            
             clickableElements.forEach(element => {
                 element.addEventListener('mouseenter', () => {
                     cursor.style.opacity = '0';
                 });
-                
                 element.addEventListener('mouseleave', () => {
                     cursor.style.opacity = '1';
+                });
+            });
+
+            // Add click listeners to all Learn More buttons
+            const learnMoreButtons = document.querySelectorAll('.flip-hint');
+            learnMoreButtons.forEach((button) => {
+                button.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const tabloid = button.closest('.tabloid');
+                    flipTabloid(tabloid);
+                });
+            });
+
+            // Add click listeners to all Flip Back buttons
+            const flipBackButtons = document.querySelectorAll('.flip-back');
+            flipBackButtons.forEach((button) => {
+                button.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const tabloid = button.closest('.tabloid');
+                    flipTabloidBack(tabloid);
+                });
+            });
+
+            // Add click listeners to tabloids themselves
+            const tabloids = document.querySelectorAll('.tabloid');
+            tabloids.forEach((tabloid) => {
+                tabloid.addEventListener('click', (e) => {
+                    // Don't flip if clicking on links or buttons
+                    if (e.target.tagName === 'A' || e.target.closest('a') ||
+                        e.target.tagName === 'BUTTON' || e.target.closest('button')) {
+                        return;
+                    }
+                    flipTabloid(tabloid);
                 });
             });
 
@@ -867,29 +905,6 @@
                 }
             });
 
-            // Add click listeners to all Learn More buttons
-            const learnMoreButtons = document.querySelectorAll('.flip-hint');
-            learnMoreButtons.forEach((button) => {
-                button.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    const tabloid = button.closest('.tabloid');
-                    flipTabloid(tabloid);
-                });
-            });
-
-            // Add click listeners to tabloids themselves
-            const tabloids = document.querySelectorAll('.tabloid');
-            tabloids.forEach((tabloid) => {
-                tabloid.addEventListener('click', (e) => {
-                    // Don't flip if clicking on links or buttons
-                    if (e.target.tagName === 'A' || e.target.closest('a') || 
-                        e.target.tagName === 'BUTTON' || e.target.closest('button')) {
-                        return;
-                    }
-                    flipTabloid(tabloid);
-                });
-            });
-            
             // Initialize animations
             createStars();
             createParticles();
