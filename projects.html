@@ -271,7 +271,7 @@
         /* Tabloids Grid */
         .tabloids-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
             gap: 3rem;
             margin-bottom: 2rem;
         }
@@ -279,7 +279,8 @@
         /* Tabloid Container */
         .tabloid-container {
             perspective: 1000px;
-            height: 450px;
+            height: 480px;
+            width: 100%;
         }
 
         .tabloid {
@@ -449,17 +450,22 @@
             position: absolute;
             bottom: 1rem;
             right: 1rem;
-            background: rgba(0, 160, 240, 0.8);
-            padding: 0.5rem;
-            border-radius: 50%;
-            font-size: 1.2rem;
-            animation: pulse 2s infinite;
+            background: linear-gradient(45deg, #00A0F0, #0080C7);
+            color: white;
+            border: none;
+            padding: 0.7rem 1.2rem;
+            border-radius: 25px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
             z-index: 3;
+            box-shadow: 0 4px 15px rgba(0, 160, 240, 0.3);
         }
 
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); opacity: 0.8; }
-            50% { transform: scale(1.1); opacity: 1; }
+        .flip-hint:hover {
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 6px 20px rgba(0, 160, 240, 0.4);
         }
 
         /* More Projects Section */
@@ -537,7 +543,7 @@
             }
 
             .tabloid-container {
-                height: 400px;
+                height: 480px;
             }
 
             .tabloid-title {
@@ -603,14 +609,15 @@
                     <div class="tabloid" onclick="flipTabloid(this)">
                         <div class="tabloid-face tabloid-front">
                             <h3 class="tabloid-title">L-VITeX: Light-Weight Visual Intuition for Terrain Exploration</h3>
-                            <div class="tabloid-image" style="background-image: url('/api/placeholder/400/300');">
+                            <!-- IMAGE: Replace with your project image -->
+                            <div class="tabloid-image" style="background-image: url('files/lvitex.png');">
                                 <div class="tabloid-date">Aug - Sep 2024</div>
                                 <div class="tabloid-links">
                                     <a href="https://arxiv.org/abs/2410.07872" class="tabloid-link" target="_blank" onclick="event.stopPropagation()">📄 Paper</a>
                                     <a href="https://www.linkedin.com/feed/update/urn:li:activity:7251270427266703361/" class="tabloid-link" target="_blank" onclick="event.stopPropagation()">🎥 Video</a>
                                 </div>
                             </div>
-                            <div class="flip-hint">🔄</div>
+                            <button class="flip-hint" onclick="event.stopPropagation(); flipTabloid(this.closest('.tabloid'));">Learn More</button>
                         </div>
                         
                         <div class="tabloid-face tabloid-back">
@@ -647,6 +654,8 @@
                     <div class="tabloid" onclick="flipTabloid(this)">
                         <div class="tabloid-face tabloid-front">
                             <h3 class="tabloid-title">Digital Twin-Assisted Hybrid Approach to Optimal Trajectory Planning</h3>
+                            <!-- IMAGE: Replace 'your-image.png' with your actual image filename -->
+                            <!-- Example: background-image: url('files/digital-twin.gif'); -->
                             <div class="tabloid-image" style="background-image: url('/api/placeholder/400/300');">
                                 <div class="tabloid-date">Jan - Oct 2023</div>
                                 <div class="tabloid-links">
@@ -654,7 +663,7 @@
                                     <a href="https://drive.google.com/file/d/1dxZbX7z8mD8gAOg_7pLhcbCc7XwhBQOG/view?usp=sharing" class="tabloid-link" target="_blank" onclick="event.stopPropagation()">🎥 Video</a>
                                 </div>
                             </div>
-                            <div class="flip-hint">🔄</div>
+                            <button class="flip-hint" onclick="event.stopPropagation(); flipTabloid(this.closest('.tabloid'));">Learn More</button>
                         </div>
                         
                         <div class="tabloid-face tabloid-back">
@@ -681,6 +690,8 @@
                     <div class="tabloid" onclick="flipTabloid(this)">
                         <div class="tabloid-face tabloid-front">
                             <h3 class="tabloid-title">Multi-Robot Collaboration for Exploring Martian Polar Caps</h3>
+                            <!-- IMAGE: Replace 'your-image.png' with your actual image filename -->
+                            <!-- Example: background-image: url('files/mars-robots.gif'); -->
                             <div class="tabloid-image" style="background-image: url('/api/placeholder/400/300');">
                                 <div class="tabloid-date">Apr - Aug 2023</div>
                                 <div class="tabloid-links">
@@ -688,7 +699,7 @@
                                     <a href="https://www.linkedin.com/posts/rsr-ogrodoot_irdc2023-robotics-mars-activity-7062290947782422528-g3jI?utm_source=share&utm_medium=member_desktop" class="tabloid-link" target="_blank" onclick="event.stopPropagation()">🎥 Video</a>
                                 </div>
                             </div>
-                            <div class="flip-hint">🔄</div>
+                            <button class="flip-hint" onclick="event.stopPropagation(); flipTabloid(this.closest('.tabloid'));">Learn More</button>
                         </div>
                         
                         <div class="tabloid-face tabloid-back">
@@ -724,6 +735,8 @@
                     <div class="tabloid" onclick="flipTabloid(this)">
                         <div class="tabloid-face tabloid-front">
                             <h3 class="tabloid-title">3D Mapping of Martian Lava Cave & Obstacle Segmentation</h3>
+                            <!-- IMAGE: Replace 'your-image.png' with your actual image filename -->
+                            <!-- Example: background-image: url('files/cave-mapping.gif'); -->
                             <div class="tabloid-image" style="background-image: url('/api/placeholder/400/300');">
                                 <div class="tabloid-date">Jan - Aug 2022</div>
                                 <div class="tabloid-links">
@@ -732,7 +745,7 @@
                                     <a href="https://discourse.ros.org/t/ros-news-for-the-week-of-january-23rd-2022/24073" class="tabloid-link" target="_blank" onclick="event.stopPropagation()">📰 ROS News</a>
                                 </div>
                             </div>
-                            <div class="flip-hint">🔄</div>
+                            <button class="flip-hint" onclick="event.stopPropagation(); flipTabloid(this.closest('.tabloid'));">Learn More</button>
                         </div>
                         
                         <div class="tabloid-face tabloid-back">
@@ -785,3 +798,83 @@
         clickableElements.forEach(element => {
             element.addEventListener('mouseenter', () => {
                 cursor.style.opacity = '0';
+            });
+            
+            element.addEventListener('mouseleave', () => {
+                cursor.style.opacity = '1';
+            });
+        });
+
+        // Tabloid Flip Functionality
+        function flipTabloid(tabloid) {
+            tabloid.classList.toggle('flipped');
+        }
+
+        // Generate Stars
+        function createStars() {
+            const starsContainer = document.querySelector('.stars');
+            const starCount = 200;
+            
+            for (let i = 0; i < starCount; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.animationDelay = Math.random() * 2 + 's';
+                star.style.animationDuration = (Math.random() * 3 + 1) + 's';
+                starsContainer.appendChild(star);
+            }
+        }
+
+        // Generate Floating Particles
+        function createParticles() {
+            const particlesContainer = document.querySelector('.particles');
+            
+            setInterval(() => {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDuration = (Math.random() * 4 + 4) + 's';
+                particle.style.animationDelay = Math.random() * 2 + 's';
+                particlesContainer.appendChild(particle);
+                
+                setTimeout(() => {
+                    particle.remove();
+                }, 8000);
+            }, 500);
+        }
+
+        // Navigation Management
+        const navButtons = document.querySelectorAll('.nav-btn');
+        
+        // Set active button based on current page
+        const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+        
+        navButtons.forEach(btn => {
+            const btnHref = btn.getAttribute('href');
+            btn.classList.remove('active');
+            
+            if (btnHref === currentPage || 
+                (currentPage === 'projects.html' && btnHref === 'projects.html')) {
+                btn.classList.add('active');
+            }
+        });
+
+        // Initialize Animations
+        document.addEventListener('DOMContentLoaded', () => {
+            createStars();
+            createParticles();
+        });
+
+        // Smooth scroll behavior for internal links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
