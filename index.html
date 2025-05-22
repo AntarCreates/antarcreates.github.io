@@ -19,6 +19,18 @@
             cursor: none;
         }
 
+        /* Show default cursor on clickable elements */
+        a, button, .clickable {
+            cursor: pointer !important;
+        }
+
+        /* Hide UFO cursor on clickable elements */
+        a:hover ~ .cursor,
+        button:hover ~ .cursor,
+        .clickable:hover ~ .cursor {
+            opacity: 0;
+        }
+
         /* Custom UFO Cursor */
         .cursor {
             position: fixed;
@@ -26,9 +38,64 @@
             height: 30px;
             pointer-events: none;
             z-index: 10000;
-            transition: transform 0.1s ease;
+            transition: opacity 0.2s ease, transform 0.1s ease;
             font-size: 20px;
             transform: translate(-50%, -50%);
+        }
+
+        /* Navigation Menu */
+        .nav-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            padding: 20px;
+        }
+
+        .nav-menu {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .nav-left, .nav-right {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .nav-btn {
+            padding: 12px 20px;
+            background: rgba(0, 160, 240, 0.1);
+            border: 2px solid rgba(0, 160, 240, 0.3);
+            border-radius: 25px;
+            color: #ffffff;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            min-width: 120px;
+            text-align: center;
+        }
+
+        .nav-btn:hover {
+            background: rgba(0, 160, 240, 0.2);
+            border-color: #00A0F0;
+            transform: translateX(10px);
+            box-shadow: 0 5px 20px rgba(0, 160, 240, 0.3);
+        }
+
+        .nav-left .nav-btn:hover {
+            transform: translateX(-10px);
+        }
+
+        .nav-btn.active {
+            background: rgba(0, 160, 240, 0.3);
+            border-color: #00A0F0;
         }
 
         /* Space Background */
@@ -103,6 +170,7 @@
             padding: 2rem;
             position: relative;
             z-index: 1;
+            margin-top: 80px;
         }
 
         /* Astronaut Avatar */
@@ -317,6 +385,33 @@
         @media (max-width: 768px) {
             .container {
                 padding: 1rem;
+                margin-top: 60px;
+            }
+            
+            .nav-container {
+                padding: 15px;
+            }
+            
+            .nav-menu {
+                flex-direction: column;
+                align-items: center;
+                gap: 15px;
+            }
+            
+            .nav-left, .nav-right {
+                flex-direction: row;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .nav-btn {
+                min-width: 100px;
+                font-size: 0.8rem;
+                padding: 10px 15px;
+            }
+            
+            .nav-btn:hover, .nav-left .nav-btn:hover {
+                transform: translateY(-5px);
             }
             
             .social-links {
@@ -369,6 +464,22 @@
 <body>
     <!-- Custom UFO Cursor -->
     <div class="cursor">🛸</div>
+
+    <!-- Navigation Menu -->
+    <nav class="nav-container">
+        <div class="nav-menu">
+            <div class="nav-left">
+                <a href="#home" class="nav-btn active">🏠 Home</a>
+                <a href="#projects" class="nav-btn">🚀 Projects</a>
+                <a href="#research" class="nav-btn">🔬 Research</a>
+            </div>
+            <div class="nav-right">
+                <a href="#activities" class="nav-btn">⚡ Activities</a>
+                <a href="#achievements" class="nav-btn">🏆 Achievements</a>
+                <a href="#contact" class="nav-btn">📡 Contact</a>
+            </div>
+        </div>
+    </nav>
 
     <!-- Loading Screen -->
     <div class="loading">
@@ -437,11 +548,51 @@
     </div>
 
     <script>
-        // Custom UFO Cursor
+        // Custom UFO Cursor Management
         const cursor = document.querySelector('.cursor');
+        let isOverClickable = false;
+
         document.addEventListener('mousemove', (e) => {
             cursor.style.left = e.clientX + 'px';
             cursor.style.top = e.clientY + 'px';
+        });
+
+        // Hide UFO cursor when hovering over clickable elements
+        const clickableElements = document.querySelectorAll('a, button, .clickable, .tech-icon');
+        
+        clickableElements.forEach(element => {
+            element.addEventListener('mouseenter', () => {
+                cursor.style.opacity = '0';
+                isOverClickable = true;
+            });
+            
+            element.addEventListener('mouseleave', () => {
+                cursor.style.opacity = '1';
+                isOverClickable = false;
+            });
+        });
+
+        // Navigation Active State Management
+        const navButtons = document.querySelectorAll('.nav-btn');
+        
+        navButtons.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                
+                // Remove active class from all buttons
+                navButtons.forEach(b => b.classList.remove('active'));
+                
+                // Add active class to clicked button
+                btn.classList.add('active');
+                
+                // Here you would typically handle page navigation
+                // For now, we'll just log the target
+                const target = btn.getAttribute('href').substring(1);
+                console.log(`Navigating to: ${target}`);
+                
+                // You can add page navigation logic here
+                // For example: loadPage(target);
+            });
         });
 
         // Generate Stars
