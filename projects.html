@@ -271,16 +271,17 @@
         /* Tabloids Grid */
         .tabloids-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
             gap: 3rem;
             margin-bottom: 2rem;
+            justify-items: center;
         }
 
         /* Tabloid Container */
         .tabloid-container {
             perspective: 1000px;
-            height: 480px;
-            width: 100%;
+            height: 500px;
+            width: 380px;
         }
 
         .tabloid {
@@ -317,7 +318,6 @@
         .tabloid-front:hover {
             border-color: #00A0F0;
             box-shadow: 0 10px 30px rgba(0, 160, 240, 0.3);
-            transform: translateY(-5px);
         }
 
         .tabloid-back {
@@ -617,7 +617,7 @@
                                     <a href="https://www.linkedin.com/feed/update/urn:li:activity:7251270427266703361/" class="tabloid-link" target="_blank" onclick="event.stopPropagation()">🎥 Video</a>
                                 </div>
                             </div>
-                            <button class="flip-hint" onclick="event.stopPropagation(); flipTabloid(this.closest('.tabloid'));">Learn More</button>
+                            <button class="flip-hint" onclick="flipTabloidFromButton(this);">Learn More</button>
                         </div>
                         
                         <div class="tabloid-face tabloid-back">
@@ -663,7 +663,7 @@
                                     <a href="https://drive.google.com/file/d/1dxZbX7z8mD8gAOg_7pLhcbCc7XwhBQOG/view?usp=sharing" class="tabloid-link" target="_blank" onclick="event.stopPropagation()">🎥 Video</a>
                                 </div>
                             </div>
-                            <button class="flip-hint" onclick="event.stopPropagation(); flipTabloid(this.closest('.tabloid'));">Learn More</button>
+                            <button class="flip-hint" onclick="flipTabloidFromButton(this);">Learn More</button>
                         </div>
                         
                         <div class="tabloid-face tabloid-back">
@@ -699,7 +699,7 @@
                                     <a href="https://www.linkedin.com/posts/rsr-ogrodoot_irdc2023-robotics-mars-activity-7062290947782422528-g3jI?utm_source=share&utm_medium=member_desktop" class="tabloid-link" target="_blank" onclick="event.stopPropagation()">🎥 Video</a>
                                 </div>
                             </div>
-                            <button class="flip-hint" onclick="event.stopPropagation(); flipTabloid(this.closest('.tabloid'));">Learn More</button>
+                            <button class="flip-hint" onclick="flipTabloidFromButton(this);">Learn More</button>
                         </div>
                         
                         <div class="tabloid-face tabloid-back">
@@ -745,7 +745,7 @@
                                     <a href="https://discourse.ros.org/t/ros-news-for-the-week-of-january-23rd-2022/24073" class="tabloid-link" target="_blank" onclick="event.stopPropagation()">📰 ROS News</a>
                                 </div>
                             </div>
-                            <button class="flip-hint" onclick="event.stopPropagation(); flipTabloid(this.closest('.tabloid'));">Learn More</button>
+                            <button class="flip-hint" onclick="flipTabloidFromButton(this);">Learn More</button>
                         </div>
                         
                         <div class="tabloid-face tabloid-back">
@@ -807,7 +807,17 @@
 
         // Tabloid Flip Functionality
         function flipTabloid(tabloid) {
+            console.log('Flipping tabloid:', tabloid); // Debug log
             tabloid.classList.toggle('flipped');
+        }
+
+        // Alternative flip function for button clicks
+        function flipTabloidFromButton(button) {
+            const tabloid = button.closest('.tabloid');
+            console.log('Button clicked, flipping tabloid:', tabloid); // Debug log
+            if (tabloid) {
+                tabloid.classList.toggle('flipped');
+            }
         }
 
         // Generate Stars
