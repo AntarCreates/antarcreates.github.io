@@ -24,53 +24,45 @@
       </div>
     </div>
     
-    <!-- Debug Panel -->
-    <div id="debug-panel" style="
+    <!-- Simple OpenCV Panel - No Complex Features -->
+    <div id="opencv-panel" style="
       position: fixed;
       top: 10px;
       left: 10px;
-      background: rgba(0,0,0,0.95);
+      background: rgba(0,0,0,0.9);
       color: white;
       padding: 15px;
       border-radius: 8px;
-      font-family: Arial, monospace;
-      font-size: 11px;
+      font-family: Arial, sans-serif;
+      font-size: 12px;
       z-index: 10000;
-      border: 2px solid #00ff00;
-      min-width: 300px;
-      max-height: 80vh;
-      overflow-y: auto;
+      border: 2px solid #28a745;
     ">
-      <div style="font-weight: bold; color: #00ff00; margin-bottom: 10px; text-align: center;">
-        🔍 DEBUG MODE
+      <div style="font-weight: bold; color: #28a745; margin-bottom: 10px;">📡 OpenCV Feed</div>
+      
+      <button id="connect-btn" onclick="connectAndStart()" style="
+        background: #28a745; color: white; border: none; padding: 8px; 
+        border-radius: 3px; cursor: pointer; width: 100%; margin-bottom: 5px; font-weight: bold;
+      ">🚀 Connect & Start</button>
+      
+      <button id="stop-btn" onclick="stopCapture()" style="
+        background: #dc3545; color: white; border: none; padding: 8px; 
+        border-radius: 3px; cursor: pointer; width: 100%; margin-bottom: 10px;
+      " disabled>⏹️ Stop</button>
+      
+      <div style="margin-bottom: 8px;">
+        FPS: <input type="range" id="fps-slider" min="5" max="25" value="10" style="width: 70px;" onchange="updateFPS(this.value)">
+        <span id="fps-display">10</span>
       </div>
       
-      <button id="debug-start" onclick="debugStart()" style="
-        background: #00ff00; color: black; border: none; padding: 8px; 
-        border-radius: 4px; cursor: pointer; width: 100%; margin-bottom: 8px; font-weight: bold;
-      ">🔍 Debug Start</button>
+      <div id="status" style="
+        padding: 8px; background: rgba(220,53,69,0.3); border-radius: 4px; 
+        text-align: center; font-weight: bold; margin-bottom: 8px;
+      ">Ready to Connect</div>
       
-      <button onclick="testCanvas()" style="
-        background: #0066ff; color: white; border: none; padding: 6px; 
-        border-radius: 4px; cursor: pointer; width: 100%; margin-bottom: 8px;
-      ">🖼️ Test Canvas</button>
-      
-      <button onclick="clearLog()" style="
-        background: #666; color: white; border: none; padding: 4px; 
-        border-radius: 4px; cursor: pointer; width: 100%; margin-bottom: 8px;
-      ">🗑️ Clear Log</button>
-      
-      <div id="debug-log" style="
-        background: rgba(0,0,0,0.8); padding: 8px; border-radius: 4px; 
-        font-size: 9px; max-height: 200px; overflow-y: auto; 
-        border: 1px solid #333; white-space: pre-wrap;
-      ">Debug log will appear here...</div>
-      
-      <div style="margin-top: 8px; font-size: 10px; color: #ccc;">
-        Connection: <span id="connection-status" style="color: #ff6666;">Disconnected</span><br>
-        Frames sent: <span id="frames-sent">0</span><br>
-        Canvas size: <span id="canvas-size">Unknown</span><br>
-        Last error: <span id="last-error">None</span>
+      <div style="font-size: 10px; color: #ddd; text-align: center; padding: 5px; background: rgba(255,255,255,0.05); border-radius: 3px;">
+        Frames: <span id="frame-count">0</span> | 
+        Valid: <span id="valid-count">0</span>
       </div>
     </div>
 
@@ -78,175 +70,158 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pako/2.1.0/pako.min.js"></script>
     
     <script>
-      // Debug Unity Capture
+      // Simple Unity to OpenCV Bridge
       let websocket = null;
-      let framesSent = 0;
-      let debugInterval = null;
+      let isCapturing = false;
+      let captureInterval = null;
+      let frameCount = 0;
+      let validFrames = 0;
+      let fps = 10;
       
-      function log(message) {
-        const logDiv = document.getElementById('debug-log');
-        const timestamp = new Date().toLocaleTimeString();
-        logDiv.textContent += `[${timestamp}] ${message}\n`;
-        logDiv.scrollTop = logDiv.scrollHeight;
-        console.log(`[DEBUG] ${message}`);
-      }
-      
-      function updateStatus(field, value, color = null) {
-        const element = document.getElementById(field);
-        element.textContent = value;
-        if (color) element.style.color = color;
-      }
-      
-      function clearLog() {
-        document.getElementById('debug-log').textContent = '';
-      }
-      
-      function testCanvas() {
+      function connectAndStart() {
         const canvas = document.querySelector("#unity-canvas");
         if (!canvas) {
-          log("❌ No Unity canvas found!");
+          updateStatus("No Canvas Found", "#dc3545");
           return;
         }
         
-        log(`📐 Canvas: ${canvas.width}x${canvas.height}`);
-        updateStatus('canvas-size', `${canvas.width}x${canvas.height}`);
+        updateStatus("Connecting...", "#ffc107");
         
-        try {
-          // Test canvas capture
-          const dataURL = canvas.toDataURL('image/jpeg', 0.8);
-          const base64Data = dataURL.split(',')[1];
-          
-          log(`📸 Test capture: ${base64Data.length} bytes`);
-          
-          if (base64Data.length < 1000) {
-            log("⚠️ Canvas capture very small - likely blank");
-          } else {
-            log("✅ Canvas capture looks good");
-            
-            // Show preview
-            const preview = window.open('', 'preview', 'width=400,height=300');
-            preview.document.write(`
-              <html><body style="margin:0;background:#000;text-align:center;">
-                <h3 style="color:white;">Canvas Test</h3>
-                <img src="${dataURL}" style="max-width:90%;max-height:80%;">
-              </body></html>
-            `);
-          }
-        } catch (error) {
-          log(`❌ Canvas test failed: ${error.message}`);
-          updateStatus('last-error', error.message, '#ff6666');
-        }
-      }
-      
-      function debugStart() {
-        log("🚀 Starting debug session...");
-        
-        // Connect to server
         try {
           websocket = new WebSocket("ws://localhost:8765");
           
           websocket.onopen = () => {
-            log("✅ WebSocket connected to localhost:8765");
-            updateStatus('connection-status', 'Connected', '#66ff66');
+            updateStatus("Connected - Starting Capture", "#28a745");
+            document.getElementById("connect-btn").disabled = true;
+            document.getElementById("stop-btn").disabled = false;
             
-            // Send test message
-            websocket.send(JSON.stringify({
-              type: 'debug_start',
-              message: 'Debug session starting'
-            }));
-            
-            // Start sending frames
-            startDebugCapture();
+            // Start capturing immediately
+            startCapture();
           };
           
           websocket.onclose = () => {
-            log("❌ WebSocket disconnected");
-            updateStatus('connection-status', 'Disconnected', '#ff6666');
-            stopDebugCapture();
+            updateStatus("Disconnected", "#dc3545");
+            document.getElementById("connect-btn").disabled = false;
+            document.getElementById("stop-btn").disabled = true;
+            stopCapture();
           };
           
           websocket.onerror = (error) => {
-            log(`❌ WebSocket error: ${error}`);
-            updateStatus('last-error', `WebSocket: ${error}`, '#ff6666');
-          };
-          
-          websocket.onmessage = (event) => {
-            try {
-              const data = JSON.parse(event.data);
-              log(`📨 Received: ${data.type || 'unknown'}`);
-            } catch (e) {
-              log(`📨 Received: ${event.data}`);
-            }
+            updateStatus("Connection Error", "#dc3545");
+            console.error("WebSocket error:", error);
           };
           
         } catch (error) {
-          log(`❌ Connection failed: ${error.message}`);
-          updateStatus('last-error', error.message, '#ff6666');
+          updateStatus("Failed to Connect", "#dc3545");
+          console.error("Connection failed:", error);
         }
       }
       
-      function startDebugCapture() {
-        log("📹 Starting frame capture...");
-        framesSent = 0;
-        
-        debugInterval = setInterval(() => {
-          sendDebugFrame();
-        }, 200); // 5 fps for debug
-      }
-      
-      function stopDebugCapture() {
-        if (debugInterval) {
-          clearInterval(debugInterval);
-          debugInterval = null;
-        }
-        log("⏹️ Stopped frame capture");
-      }
-      
-      function sendDebugFrame() {
+      function startCapture() {
         const canvas = document.querySelector("#unity-canvas");
-        if (!canvas || !websocket || websocket.readyState !== WebSocket.OPEN) {
-          return;
-        }
+        if (!canvas || isCapturing) return;
+        
+        isCapturing = true;
+        frameCount = 0;
+        validFrames = 0;
+        
+        // Wait 3 seconds for Unity to render something
+        updateStatus("Waiting for Unity...", "#ffc107");
+        
+        setTimeout(() => {
+          updateStatus("Capturing...", "#17a2b8");
+          
+          captureInterval = setInterval(() => {
+            captureFrame(canvas);
+          }, 1000 / fps);
+          
+          console.log(`🎥 Started capturing at ${fps} fps`);
+        }, 3000);
+      }
+      
+      function captureFrame(canvas) {
+        if (!isCapturing || !websocket || websocket.readyState !== WebSocket.OPEN) return;
         
         try {
-          // Capture frame
-          const dataURL = canvas.toDataURL('image/jpeg', 0.7);
+          const dataURL = canvas.toDataURL('image/jpeg', 0.85);
           const base64Data = dataURL.split(',')[1];
           
-          framesSent++;
-          updateStatus('frames-sent', framesSent);
+          frameCount++;
           
-          // Create frame data
+          // Simple validation - check if frame has reasonable size
+          const isValid = base64Data.length > 8000; // Frames smaller than 8KB are likely blank
+          if (isValid) validFrames++;
+          
+          // Update UI
+          document.getElementById('frame-count').textContent = frameCount;
+          document.getElementById('valid-count').textContent = validFrames;
+          
+          // Send to OpenCV
           const frameData = {
             type: 'camera_frame',
             image: base64Data,
-            frame_number: framesSent,
+            frame_number: frameCount,
             timestamp: Date.now(),
             width: canvas.width,
-            height: canvas.height,
-            debug: true
+            height: canvas.height
           };
           
-          // Send to server
           websocket.send(JSON.stringify(frameData));
           
-          // Log progress
-          if (framesSent % 10 === 0) {
-            log(`📊 Sent ${framesSent} frames (${base64Data.length} bytes)`);
-          }
-          
-          // Check frame quality
-          if (base64Data.length < 5000) {
-            log(`⚠️ Frame ${framesSent} small: ${base64Data.length} bytes`);
+          // Update status
+          if (frameCount % 30 === 0) {
+            const validPercent = Math.round((validFrames / frameCount) * 100);
+            updateStatus(`Streaming: ${validPercent}% valid`, "#28a745");
+            
+            if (validPercent < 50) {
+              console.warn("⚠️ Many frames appear blank - Unity may still be loading");
+            }
           }
           
         } catch (error) {
-          log(`❌ Frame send error: ${error.message}`);
-          updateStatus('last-error', error.message, '#ff6666');
+          console.error("Capture error:", error);
+          updateStatus("Capture Error", "#dc3545");
         }
       }
+      
+      function stopCapture() {
+        isCapturing = false;
+        if (captureInterval) {
+          clearInterval(captureInterval);
+          captureInterval = null;
+        }
+        
+        if (websocket) {
+          websocket.close();
+          websocket = null;
+        }
+        
+        updateStatus("Stopped", "#ffc107");
+        document.getElementById("connect-btn").disabled = false;
+        document.getElementById("stop-btn").disabled = true;
+        
+        console.log(`🛑 Capture stopped. Total: ${frameCount}, Valid: ${validFrames}`);
+      }
+      
+      function updateFPS(newFPS) {
+        fps = parseInt(newFPS);
+        document.getElementById('fps-display').textContent = fps;
+        
+        if (isCapturing) {
+          clearInterval(captureInterval);
+          captureInterval = setInterval(() => {
+            captureFrame(document.querySelector("#unity-canvas"));
+          }, 1000 / fps);
+        }
+      }
+      
+      function updateStatus(message, color) {
+        const statusDiv = document.getElementById('status');
+        statusDiv.textContent = message;
+        statusDiv.style.background = `${color}33`;
+      }
 
-      // Unity loading code (simplified for debug)
+      // Unity loading code
       var canvas = document.querySelector("#unity-canvas");
 
       function unityShowBanner(msg, type) {
@@ -322,8 +297,6 @@
 
       async function initializeUnity() {
         try {
-          log("🔄 Starting Unity initialization...");
-          
           unityShowBanner("Decompressing game files...", "warning");
           
           const [dataUrl, frameworkUrl, codeUrl] = await Promise.all([
@@ -349,24 +322,20 @@
                 instance.SetFullscreen(1);
               };
               
-              log("✅ Unity loaded successfully!");
-              log("💡 Now click 'Debug Start' to test capture");
+              console.log("✅ Unity loaded - ready for OpenCV capture");
               
             }).catch((message) => {
-              log(`❌ Unity load error: ${message}`);
               unityShowBanner("Error loading Unity: " + message, "error");
             });
           };
           
           script.onerror = () => {
-            log("❌ Failed to load Unity loader script");
             unityShowBanner("Failed to load Unity loader script", "error");
           };
 
           document.body.appendChild(script);
 
         } catch (error) {
-          log(`❌ Unity init error: ${error.message}`);
           unityShowBanner("Failed to decompress game files: " + error.message, "error");
         }
       }
@@ -374,22 +343,28 @@
       // Start Unity
       initializeUnity();
 
-      // Auto-test canvas when page loads
-      setTimeout(() => {
-        log("🔄 Page loaded, auto-testing canvas...");
-        testCanvas();
-      }, 5000);
+      // Keyboard shortcuts
+      document.addEventListener('keydown', function(event) {
+        if (event.key === ' ' && event.ctrlKey) {
+          event.preventDefault();
+          if (isCapturing) {
+            stopCapture();
+          } else {
+            connectAndStart();
+          }
+        }
+      });
 
       console.log(`
-🔍 Debug Unity Capture Ready!
+🎥 Simple Unity OpenCV Bridge Ready!
 
-Steps:
-1. Wait for Unity to load
-2. Click "🖼️ Test Canvas" to verify canvas capture
-3. Click "🔍 Debug Start" to test frame streaming
-4. Watch the debug log for detailed information
+Controls:
+- Click "🚀 Connect & Start" to begin capture
+- Ctrl+Space: Start/Stop capture
+- Adjust FPS with slider
 
-This will show exactly what's happening with frame capture and transmission.
+The system waits 3 seconds after connecting to let Unity render content,
+then starts capturing frames for your OpenCV algorithms.
       `);
     </script>
   </body>
