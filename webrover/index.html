@@ -24,60 +24,53 @@
       </div>
     </div>
     
-    <!-- Real-time Capture Panel -->
-    <div id="capture-panel" style="
+    <!-- Debug Panel -->
+    <div id="debug-panel" style="
       position: fixed;
       top: 10px;
       left: 10px;
-      background: rgba(0,0,0,0.9);
+      background: rgba(0,0,0,0.95);
       color: white;
-      padding: 12px;
-      border-radius: 6px;
-      font-family: Arial, sans-serif;
+      padding: 15px;
+      border-radius: 8px;
+      font-family: Arial, monospace;
       font-size: 11px;
       z-index: 10000;
-      border: 2px solid #ff6b35;
-      min-width: 200px;
+      border: 2px solid #00ff00;
+      min-width: 300px;
+      max-height: 80vh;
+      overflow-y: auto;
     ">
-      <div style="font-weight: bold; color: #ff6b35; margin-bottom: 8px; text-align: center;">
-        ⚡ Real-time Capture
+      <div style="font-weight: bold; color: #00ff00; margin-bottom: 10px; text-align: center;">
+        🔍 DEBUG MODE
       </div>
       
-      <button id="start-btn" onclick="startRealTimeCapture()" style="
-        background: #ff6b35; color: white; border: none; padding: 8px; 
-        border-radius: 4px; cursor: pointer; width: 100%; margin-bottom: 6px; font-weight: bold;
-      ">🚀 Start Real-time Feed</button>
+      <button id="debug-start" onclick="debugStart()" style="
+        background: #00ff00; color: black; border: none; padding: 8px; 
+        border-radius: 4px; cursor: pointer; width: 100%; margin-bottom: 8px; font-weight: bold;
+      ">🔍 Debug Start</button>
       
-      <button id="stop-btn" onclick="stopCapture()" style="
-        background: #dc3545; color: white; border: none; padding: 6px; 
+      <button onclick="testCanvas()" style="
+        background: #0066ff; color: white; border: none; padding: 6px; 
         border-radius: 4px; cursor: pointer; width: 100%; margin-bottom: 8px;
-      " disabled>⏹️ Stop</button>
+      ">🖼️ Test Canvas</button>
       
-      <div style="margin-bottom: 6px; display: flex; align-items: center;">
-        <span style="width: 40px;">FPS:</span>
-        <input type="range" id="fps-slider" min="10" max="30" value="20" style="flex: 1; margin: 0 5px;" onchange="updateFPS(this.value)">
-        <span id="fps-display" style="width: 25px;">20</span>
-      </div>
+      <button onclick="clearLog()" style="
+        background: #666; color: white; border: none; padding: 4px; 
+        border-radius: 4px; cursor: pointer; width: 100%; margin-bottom: 8px;
+      ">🗑️ Clear Log</button>
       
-      <div style="margin-bottom: 6px;">
-        <label>
-          <input type="checkbox" id="resize-640p" checked onchange="toggleResize()"> 
-          640p mode
-        </label>
-      </div>
+      <div id="debug-log" style="
+        background: rgba(0,0,0,0.8); padding: 8px; border-radius: 4px; 
+        font-size: 9px; max-height: 200px; overflow-y: auto; 
+        border: 1px solid #333; white-space: pre-wrap;
+      ">Debug log will appear here...</div>
       
-      <div id="status" style="
-        padding: 6px; background: rgba(220,53,69,0.3); border-radius: 3px; 
-        text-align: center; font-weight: bold; font-size: 10px; margin-bottom: 6px;
-      ">Ready</div>
-      
-      <div style="font-size: 9px; color: #ddd; text-align: center; padding: 4px; background: rgba(255,255,255,0.05); border-radius: 2px;">
-        Sent: <span id="frame-count">0</span> | 
-        Rate: <span id="actual-fps">0</span>/s
-      </div>
-      
-      <div style="font-size: 8px; color: #888; margin-top: 6px; text-align: center;">
-        📡 Direct canvas capture for real-time OpenCV feed
+      <div style="margin-top: 8px; font-size: 10px; color: #ccc;">
+        Connection: <span id="connection-status" style="color: #ff6666;">Disconnected</span><br>
+        Frames sent: <span id="frames-sent">0</span><br>
+        Canvas size: <span id="canvas-size">Unknown</span><br>
+        Last error: <span id="last-error">None</span>
       </div>
     </div>
 
@@ -85,216 +78,175 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pako/2.1.0/pako.min.js"></script>
     
     <script>
-      // Direct Real-time Unity Capture
+      // Debug Unity Capture
       let websocket = null;
-      let isCapturing = false;
-      let captureInterval = null;
-      let frameCount = 0;
-      let fps = 20;
-      let resize640p = true;
-      let lastFrameTime = 0;
-      let actualFPS = 0;
+      let framesSent = 0;
+      let debugInterval = null;
       
-      // Create a separate capture canvas for resizing
-      const captureCanvas = document.createElement('canvas');
-      const captureCtx = captureCanvas.getContext('2d');
+      function log(message) {
+        const logDiv = document.getElementById('debug-log');
+        const timestamp = new Date().toLocaleTimeString();
+        logDiv.textContent += `[${timestamp}] ${message}\n`;
+        logDiv.scrollTop = logDiv.scrollHeight;
+        console.log(`[DEBUG] ${message}`);
+      }
       
-      function startRealTimeCapture() {
-        console.log("🚀 Starting direct real-time capture...");
+      function updateStatus(field, value, color = null) {
+        const element = document.getElementById(field);
+        element.textContent = value;
+        if (color) element.style.color = color;
+      }
+      
+      function clearLog() {
+        document.getElementById('debug-log').textContent = '';
+      }
+      
+      function testCanvas() {
+        const canvas = document.querySelector("#unity-canvas");
+        if (!canvas) {
+          log("❌ No Unity canvas found!");
+          return;
+        }
         
-        // Connect to OpenCV server
+        log(`📐 Canvas: ${canvas.width}x${canvas.height}`);
+        updateStatus('canvas-size', `${canvas.width}x${canvas.height}`);
+        
+        try {
+          // Test canvas capture
+          const dataURL = canvas.toDataURL('image/jpeg', 0.8);
+          const base64Data = dataURL.split(',')[1];
+          
+          log(`📸 Test capture: ${base64Data.length} bytes`);
+          
+          if (base64Data.length < 1000) {
+            log("⚠️ Canvas capture very small - likely blank");
+          } else {
+            log("✅ Canvas capture looks good");
+            
+            // Show preview
+            const preview = window.open('', 'preview', 'width=400,height=300');
+            preview.document.write(`
+              <html><body style="margin:0;background:#000;text-align:center;">
+                <h3 style="color:white;">Canvas Test</h3>
+                <img src="${dataURL}" style="max-width:90%;max-height:80%;">
+              </body></html>
+            `);
+          }
+        } catch (error) {
+          log(`❌ Canvas test failed: ${error.message}`);
+          updateStatus('last-error', error.message, '#ff6666');
+        }
+      }
+      
+      function debugStart() {
+        log("🚀 Starting debug session...");
+        
+        // Connect to server
         try {
           websocket = new WebSocket("ws://localhost:8765");
           
           websocket.onopen = () => {
-            updateStatus("Connected - Starting...", "#28a745");
+            log("✅ WebSocket connected to localhost:8765");
+            updateStatus('connection-status', 'Connected', '#66ff66');
             
-            // Send ready message
+            // Send test message
             websocket.send(JSON.stringify({
-              type: 'ready',
-              message: 'Real-time direct capture starting',
-              capture_mode: 'direct_canvas',
-              target_resolution: resize640p ? '640x400' : '960x600'
+              type: 'debug_start',
+              message: 'Debug session starting'
             }));
             
-            // Start capturing immediately with a small delay
-            setTimeout(() => {
-              startDirectCapture();
-            }, 500);
+            // Start sending frames
+            startDebugCapture();
           };
           
           websocket.onclose = () => {
-            updateStatus("Disconnected", "#dc3545");
-            stopCapture();
+            log("❌ WebSocket disconnected");
+            updateStatus('connection-status', 'Disconnected', '#ff6666');
+            stopDebugCapture();
           };
           
           websocket.onerror = (error) => {
-            updateStatus("Connection Error", "#dc3545");
-            console.error("WebSocket error:", error);
+            log(`❌ WebSocket error: ${error}`);
+            updateStatus('last-error', `WebSocket: ${error}`, '#ff6666');
           };
           
           websocket.onmessage = (event) => {
             try {
               const data = JSON.parse(event.data);
-              // Handle any responses from OpenCV server
+              log(`📨 Received: ${data.type || 'unknown'}`);
             } catch (e) {
-              // Ignore non-JSON messages
+              log(`📨 Received: ${event.data}`);
             }
           };
           
         } catch (error) {
-          updateStatus("Failed to Connect", "#dc3545");
-          console.error("Connection failed:", error);
+          log(`❌ Connection failed: ${error.message}`);
+          updateStatus('last-error', error.message, '#ff6666');
         }
       }
       
-      function startDirectCapture() {
-        const unityCanvas = document.querySelector("#unity-canvas");
-        if (!unityCanvas) {
-          updateStatus("No Unity Canvas", "#dc3545");
+      function startDebugCapture() {
+        log("📹 Starting frame capture...");
+        framesSent = 0;
+        
+        debugInterval = setInterval(() => {
+          sendDebugFrame();
+        }, 200); // 5 fps for debug
+      }
+      
+      function stopDebugCapture() {
+        if (debugInterval) {
+          clearInterval(debugInterval);
+          debugInterval = null;
+        }
+        log("⏹️ Stopped frame capture");
+      }
+      
+      function sendDebugFrame() {
+        const canvas = document.querySelector("#unity-canvas");
+        if (!canvas || !websocket || websocket.readyState !== WebSocket.OPEN) {
           return;
         }
         
-        isCapturing = true;
-        frameCount = 0;
-        lastFrameTime = Date.now();
-        
-        // Set up capture canvas size
-        if (resize640p) {
-          captureCanvas.width = 640;
-          captureCanvas.height = 400;
-        } else {
-          captureCanvas.width = unityCanvas.width;
-          captureCanvas.height = unityCanvas.height;
-        }
-        
-        updateStatus(`Capturing ${captureCanvas.width}x${captureCanvas.height}`, "#ff6b35");
-        document.getElementById("start-btn").disabled = true;
-        document.getElementById("stop-btn").disabled = false;
-        
-        // Start high-frequency capture
-        captureInterval = setInterval(() => {
-          captureDirectFrame(unityCanvas);
-        }, 1000 / fps);
-        
-        console.log(`✅ Direct capture started at ${fps} fps, ${captureCanvas.width}x${captureCanvas.height}`);
-      }
-      
-      function captureDirectFrame(unityCanvas) {
-        if (!isCapturing || !websocket || websocket.readyState !== WebSocket.OPEN) return;
-        
         try {
-          // DIRECT CANVAS CAPTURE METHOD
-          // Clear capture canvas
-          captureCtx.clearRect(0, 0, captureCanvas.width, captureCanvas.height);
-          
-          // Draw Unity canvas to our capture canvas (with optional resize)
-          captureCtx.drawImage(unityCanvas, 0, 0, captureCanvas.width, captureCanvas.height);
-          
-          // Convert to JPEG with good quality for real-time
-          const dataURL = captureCanvas.toDataURL('image/jpeg', 0.75);
+          // Capture frame
+          const dataURL = canvas.toDataURL('image/jpeg', 0.7);
           const base64Data = dataURL.split(',')[1];
           
-          // Quick validation - real frames should be substantial
-          if (base64Data.length < 5000) {
-            // Frame too small, likely blank - but don't spam warnings in real-time mode
-            return;
-          }
+          framesSent++;
+          updateStatus('frames-sent', framesSent);
           
-          frameCount++;
-          
-          // Calculate actual FPS
-          const now = Date.now();
-          if (frameCount % 10 === 0) {
-            const timeDiff = now - lastFrameTime;
-            actualFPS = Math.round((10 * 1000) / timeDiff);
-            document.getElementById('actual-fps').textContent = actualFPS;
-            lastFrameTime = now;
-          }
-          
-          // Update UI
-          document.getElementById('frame-count').textContent = frameCount;
-          
-          // Send to OpenCV - MINIMAL DATA for speed
+          // Create frame data
           const frameData = {
             type: 'camera_frame',
             image: base64Data,
-            frame_number: frameCount,
-            timestamp: now,
-            width: captureCanvas.width,
-            height: captureCanvas.height
+            frame_number: framesSent,
+            timestamp: Date.now(),
+            width: canvas.width,
+            height: canvas.height,
+            debug: true
           };
           
+          // Send to server
           websocket.send(JSON.stringify(frameData));
           
-          // Update status less frequently to avoid UI lag
-          if (frameCount % 50 === 0) {
-            updateStatus(`Streaming: ${actualFPS} fps`, "#28a745");
+          // Log progress
+          if (framesSent % 10 === 0) {
+            log(`📊 Sent ${framesSent} frames (${base64Data.length} bytes)`);
+          }
+          
+          // Check frame quality
+          if (base64Data.length < 5000) {
+            log(`⚠️ Frame ${framesSent} small: ${base64Data.length} bytes`);
           }
           
         } catch (error) {
-          console.error("Direct capture error:", error);
-          updateStatus("Capture Error", "#dc3545");
+          log(`❌ Frame send error: ${error.message}`);
+          updateStatus('last-error', error.message, '#ff6666');
         }
-      }
-      
-      function stopCapture() {
-        isCapturing = false;
-        if (captureInterval) {
-          clearInterval(captureInterval);
-          captureInterval = null;
-        }
-        
-        if (websocket) {
-          websocket.close();
-          websocket = null;
-        }
-        
-        updateStatus("Stopped", "#ffc107");
-        document.getElementById("start-btn").disabled = false;
-        document.getElementById("stop-btn").disabled = true;
-        
-        console.log(`🛑 Direct capture stopped. Total frames: ${frameCount}`);
-      }
-      
-      function updateFPS(newFPS) {
-        fps = parseInt(newFPS);
-        document.getElementById('fps-display').textContent = fps;
-        
-        // Restart capture with new FPS if currently capturing
-        if (isCapturing && captureInterval) {
-          clearInterval(captureInterval);
-          captureInterval = setInterval(() => {
-            captureDirectFrame(document.querySelector("#unity-canvas"));
-          }, 1000 / fps);
-        }
-      }
-      
-      function toggleResize() {
-        resize640p = document.getElementById('resize-640p').checked;
-        console.log(`📐 Resolution mode: ${resize640p ? '640p' : 'Native'}`);
-        
-        // If currently capturing, restart to apply new resolution
-        if (isCapturing) {
-          const unityCanvas = document.querySelector("#unity-canvas");
-          if (resize640p) {
-            captureCanvas.width = 640;
-            captureCanvas.height = 400;
-          } else {
-            captureCanvas.width = unityCanvas.width;
-            captureCanvas.height = unityCanvas.height;
-          }
-          updateStatus(`Switched to ${captureCanvas.width}x${captureCanvas.height}`, "#ff6b35");
-        }
-      }
-      
-      function updateStatus(message, color) {
-        const statusDiv = document.getElementById('status');
-        statusDiv.textContent = message;
-        statusDiv.style.background = `${color}33`;
       }
 
-      // Unity WebGL Loading Code
+      // Unity loading code (simplified for debug)
       var canvas = document.querySelector("#unity-canvas");
 
       function unityShowBanner(msg, type) {
@@ -370,6 +322,8 @@
 
       async function initializeUnity() {
         try {
+          log("🔄 Starting Unity initialization...");
+          
           unityShowBanner("Decompressing game files...", "warning");
           
           const [dataUrl, frameworkUrl, codeUrl] = await Promise.all([
@@ -395,21 +349,24 @@
                 instance.SetFullscreen(1);
               };
               
-              console.log("✅ Unity loaded - Real-time capture ready!");
-              console.log("💡 Wait for game to render, then click 'Start Real-time Feed'");
+              log("✅ Unity loaded successfully!");
+              log("💡 Now click 'Debug Start' to test capture");
               
             }).catch((message) => {
+              log(`❌ Unity load error: ${message}`);
               unityShowBanner("Error loading Unity: " + message, "error");
             });
           };
           
           script.onerror = () => {
+            log("❌ Failed to load Unity loader script");
             unityShowBanner("Failed to load Unity loader script", "error");
           };
 
           document.body.appendChild(script);
 
         } catch (error) {
+          log(`❌ Unity init error: ${error.message}`);
           unityShowBanner("Failed to decompress game files: " + error.message, "error");
         }
       }
@@ -417,33 +374,22 @@
       // Start Unity
       initializeUnity();
 
-      // Keyboard shortcuts
-      document.addEventListener('keydown', function(event) {
-        if (event.key === ' ' && event.ctrlKey) {
-          event.preventDefault();
-          if (isCapturing) {
-            stopCapture();
-          } else {
-            startRealTimeCapture();
-          }
-        }
-      });
+      // Auto-test canvas when page loads
+      setTimeout(() => {
+        log("🔄 Page loaded, auto-testing canvas...");
+        testCanvas();
+      }, 5000);
 
       console.log(`
-⚡ Direct Real-time Unity Capture Ready!
+🔍 Debug Unity Capture Ready!
 
-Features:
-- 🎯 Direct canvas-to-canvas capture method
-- 📐 640p mode for better performance  
-- ⚡ High FPS real-time streaming
-- 🔧 No frame validation delays
+Steps:
+1. Wait for Unity to load
+2. Click "🖼️ Test Canvas" to verify canvas capture
+3. Click "🔍 Debug Start" to test frame streaming
+4. Watch the debug log for detailed information
 
-Controls:
-- Click "🚀 Start Real-time Feed" to begin
-- Ctrl+Space: Quick start/stop
-- Toggle 640p mode for performance vs quality
-
-This method captures directly from Unity's rendered canvas for maximum speed.
+This will show exactly what's happening with frame capture and transmission.
       `);
     </script>
   </body>
