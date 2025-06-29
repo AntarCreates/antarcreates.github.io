@@ -24,204 +24,91 @@
       </div>
     </div>
     
-    <!-- Simple OpenCV Panel - No Complex Features -->
-    <div id="opencv-panel" style="
-      position: fixed;
+    <!-- Controls Instructions -->
+    <div id="controls-panel" style="
+      position: absolute;
       top: 10px;
-      left: 10px;
-      background: rgba(0,0,0,0.9);
+      right: 10px;
+      background: rgba(0, 0, 0, 0.8);
       color: white;
       padding: 15px;
       border-radius: 8px;
       font-family: Arial, sans-serif;
-      font-size: 12px;
-      z-index: 10000;
-      border: 2px solid #28a745;
+      font-size: 14px;
+      max-width: 200px;
+      z-index: 1000;
+      border: 2px solid #00A0F0;
     ">
-      <div style="font-weight: bold; color: #28a745; margin-bottom: 10px;">📡 OpenCV Feed</div>
-      
-      <button id="connect-btn" onclick="connectAndStart()" style="
-        background: #28a745; color: white; border: none; padding: 8px; 
-        border-radius: 3px; cursor: pointer; width: 100%; margin-bottom: 5px; font-weight: bold;
-      ">🚀 Connect & Start</button>
-      
-      <button id="stop-btn" onclick="stopCapture()" style="
-        background: #dc3545; color: white; border: none; padding: 8px; 
-        border-radius: 3px; cursor: pointer; width: 100%; margin-bottom: 10px;
-      " disabled>⏹️ Stop</button>
-      
-      <div style="margin-bottom: 8px;">
-        FPS: <input type="range" id="fps-slider" min="5" max="25" value="10" style="width: 70px;" onchange="updateFPS(this.value)">
-        <span id="fps-display">10</span>
+      <div style="font-weight: bold; margin-bottom: 10px; color: #00A0F0; text-align: center;">
+        🚀 ROVER CONTROLS
       </div>
-      
-      <div id="status" style="
-        padding: 8px; background: rgba(220,53,69,0.3); border-radius: 4px; 
-        text-align: center; font-weight: bold; margin-bottom: 8px;
-      ">Ready to Connect</div>
-      
-      <div style="font-size: 10px; color: #ddd; text-align: center; padding: 5px; background: rgba(255,255,255,0.05); border-radius: 3px;">
-        Frames: <span id="frame-count">0</span> | 
-        Valid: <span id="valid-count">0</span>
+      <div style="margin-bottom: 8px;">
+        <strong>Movement:</strong><br>
+        <kbd style="background: #333; padding: 2px 6px; border-radius: 3px; margin: 0 2px;">W</kbd>
+        <kbd style="background: #333; padding: 2px 6px; border-radius: 3px; margin: 0 2px;">A</kbd>
+        <kbd style="background: #333; padding: 2px 6px; border-radius: 3px; margin: 0 2px;">S</kbd>
+        <kbd style="background: #333; padding: 2px 6px; border-radius: 3px; margin: 0 2px;">D</kbd>
+      </div>
+      <div style="margin-bottom: 8px;">
+        <strong>Camera Switch:</strong><br>
+        <kbd style="background: #333; padding: 2px 6px; border-radius: 3px;">C</kbd> - 1st/3rd Person
+      </div>
+      <div style="font-size: 12px; color: #ccc; text-align: center; margin-top: 10px;">
+        Click to hide →
       </div>
     </div>
 
-    <!-- Add pako library -->
+    <!-- Welcome Instructions Banner -->
+    <div id="welcome-banner" style="
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: linear-gradient(135deg, rgba(0, 160, 240, 0.95), rgba(0, 120, 200, 0.95));
+      color: white;
+      padding: 25px;
+      border-radius: 12px;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      z-index: 2000;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      max-width: 400px;
+      display: none;
+    ">
+      <h2 style="margin: 0 0 15px 0; color: white;">🚀 Welcome to Webrover!</h2>
+      <div style="font-size: 16px; margin-bottom: 15px;">
+        <strong>Controls:</strong><br>
+        <div style="margin: 10px 0;">
+          <kbd style="background: rgba(255,255,255,0.2); padding: 4px 8px; border-radius: 4px; margin: 0 3px;">W</kbd>
+          <kbd style="background: rgba(255,255,255,0.2); padding: 4px 8px; border-radius: 4px; margin: 0 3px;">A</kbd>
+          <kbd style="background: rgba(255,255,255,0.2); padding: 4px 8px; border-radius: 4px; margin: 0 3px;">S</kbd>
+          <kbd style="background: rgba(255,255,255,0.2); padding: 4px 8px; border-radius: 4px; margin: 0 3px;">D</kbd>
+          - Move Rover
+        </div>
+        <div style="margin: 10px 0;">
+          <kbd style="background: rgba(255,255,255,0.2); padding: 4px 8px; border-radius: 4px;">C</kbd>
+          - Switch Camera View
+        </div>
+      </div>
+      <button id="start-exploring" style="
+        background: rgba(255, 255, 255, 0.2);
+        border: 2px solid white;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 6px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: all 0.3s;
+      " onmouseover="this.style.background='rgba(255,255,255,0.3)'" 
+         onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+        Start Exploring! 🌍
+      </button>
+    </div>
+
+    <!-- Add pako library for gzip decompression -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pako/2.1.0/pako.min.js"></script>
     
     <script>
-      // Simple Unity to OpenCV Bridge
-      let websocket = null;
-      let isCapturing = false;
-      let captureInterval = null;
-      let frameCount = 0;
-      let validFrames = 0;
-      let fps = 10;
-      
-      function connectAndStart() {
-        const canvas = document.querySelector("#unity-canvas");
-        if (!canvas) {
-          updateStatus("No Canvas Found", "#dc3545");
-          return;
-        }
-        
-        updateStatus("Connecting...", "#ffc107");
-        
-        try {
-          websocket = new WebSocket("ws://localhost:8765");
-          
-          websocket.onopen = () => {
-            updateStatus("Connected - Starting Capture", "#28a745");
-            document.getElementById("connect-btn").disabled = true;
-            document.getElementById("stop-btn").disabled = false;
-            
-            // Start capturing immediately
-            startCapture();
-          };
-          
-          websocket.onclose = () => {
-            updateStatus("Disconnected", "#dc3545");
-            document.getElementById("connect-btn").disabled = false;
-            document.getElementById("stop-btn").disabled = true;
-            stopCapture();
-          };
-          
-          websocket.onerror = (error) => {
-            updateStatus("Connection Error", "#dc3545");
-            console.error("WebSocket error:", error);
-          };
-          
-        } catch (error) {
-          updateStatus("Failed to Connect", "#dc3545");
-          console.error("Connection failed:", error);
-        }
-      }
-      
-      function startCapture() {
-        const canvas = document.querySelector("#unity-canvas");
-        if (!canvas || isCapturing) return;
-        
-        isCapturing = true;
-        frameCount = 0;
-        validFrames = 0;
-        
-        // Wait 3 seconds for Unity to render something
-        updateStatus("Waiting for Unity...", "#ffc107");
-        
-        setTimeout(() => {
-          updateStatus("Capturing...", "#17a2b8");
-          
-          captureInterval = setInterval(() => {
-            captureFrame(canvas);
-          }, 1000 / fps);
-          
-          console.log(`🎥 Started capturing at ${fps} fps`);
-        }, 3000);
-      }
-      
-      function captureFrame(canvas) {
-        if (!isCapturing || !websocket || websocket.readyState !== WebSocket.OPEN) return;
-        
-        try {
-          const dataURL = canvas.toDataURL('image/jpeg', 0.85);
-          const base64Data = dataURL.split(',')[1];
-          
-          frameCount++;
-          
-          // Simple validation - check if frame has reasonable size
-          const isValid = base64Data.length > 8000; // Frames smaller than 8KB are likely blank
-          if (isValid) validFrames++;
-          
-          // Update UI
-          document.getElementById('frame-count').textContent = frameCount;
-          document.getElementById('valid-count').textContent = validFrames;
-          
-          // Send to OpenCV
-          const frameData = {
-            type: 'camera_frame',
-            image: base64Data,
-            frame_number: frameCount,
-            timestamp: Date.now(),
-            width: canvas.width,
-            height: canvas.height
-          };
-          
-          websocket.send(JSON.stringify(frameData));
-          
-          // Update status
-          if (frameCount % 30 === 0) {
-            const validPercent = Math.round((validFrames / frameCount) * 100);
-            updateStatus(`Streaming: ${validPercent}% valid`, "#28a745");
-            
-            if (validPercent < 50) {
-              console.warn("⚠️ Many frames appear blank - Unity may still be loading");
-            }
-          }
-          
-        } catch (error) {
-          console.error("Capture error:", error);
-          updateStatus("Capture Error", "#dc3545");
-        }
-      }
-      
-      function stopCapture() {
-        isCapturing = false;
-        if (captureInterval) {
-          clearInterval(captureInterval);
-          captureInterval = null;
-        }
-        
-        if (websocket) {
-          websocket.close();
-          websocket = null;
-        }
-        
-        updateStatus("Stopped", "#ffc107");
-        document.getElementById("connect-btn").disabled = false;
-        document.getElementById("stop-btn").disabled = true;
-        
-        console.log(`🛑 Capture stopped. Total: ${frameCount}, Valid: ${validFrames}`);
-      }
-      
-      function updateFPS(newFPS) {
-        fps = parseInt(newFPS);
-        document.getElementById('fps-display').textContent = fps;
-        
-        if (isCapturing) {
-          clearInterval(captureInterval);
-          captureInterval = setInterval(() => {
-            captureFrame(document.querySelector("#unity-canvas"));
-          }, 1000 / fps);
-        }
-      }
-      
-      function updateStatus(message, color) {
-        const statusDiv = document.getElementById('status');
-        statusDiv.textContent = message;
-        statusDiv.style.background = `${color}33`;
-      }
-
-      // Unity loading code
       var canvas = document.querySelector("#unity-canvas");
 
       function unityShowBanner(msg, type) {
@@ -243,6 +130,7 @@
         updateBannerVisibility();
       }
 
+      // Custom function to handle gzipped files with proper MIME types
       async function loadGzippedFile(url) {
         try {
           const response = await fetch(url);
@@ -252,13 +140,17 @@
           const compressed = await response.arrayBuffer();
           const decompressed = pako.ungzip(compressed);
           
-          let mimeType = 'application/octet-stream';
+          // Determine the correct MIME type based on file extension
+          let mimeType = 'application/octet-stream'; // default
           if (url.endsWith('.wasm.gz')) {
             mimeType = 'application/wasm';
           } else if (url.endsWith('.js.gz')) {
             mimeType = 'application/javascript';
+          } else if (url.endsWith('.data.gz')) {
+            mimeType = 'application/octet-stream';
           }
           
+          // Create a blob URL with the correct MIME type
           const blob = new Blob([decompressed], { type: mimeType });
           return URL.createObjectURL(blob);
         } catch (error) {
@@ -269,6 +161,8 @@
 
       var buildUrl = "Build";
       var loaderUrl = buildUrl + "/v101.loader.js";
+
+      // Initialize with gzipped files first, we'll replace URLs after decompression
       var config = {
         arguments: [],
         dataUrl: buildUrl + "/v101.data.gz",
@@ -295,34 +189,41 @@
 
       document.querySelector("#unity-loading-bar").style.display = "block";
 
+      // Load and decompress files before starting Unity
       async function initializeUnity() {
         try {
           unityShowBanner("Decompressing game files...", "warning");
           
+          // Decompress the gzipped files
           const [dataUrl, frameworkUrl, codeUrl] = await Promise.all([
             loadGzippedFile(config.dataUrl),
             loadGzippedFile(config.frameworkUrl),
             loadGzippedFile(config.codeUrl)
           ]);
 
+          // Update config with decompressed file URLs
           config.dataUrl = dataUrl;
           config.frameworkUrl = frameworkUrl;
           config.codeUrl = codeUrl;
 
           unityShowBanner("Loading Unity player...", "warning");
 
+          // Load Unity loader
           const script = document.createElement("script");
           script.src = loaderUrl;
           script.onload = () => {
             createUnityInstance(canvas, config, (progress) => {
               document.querySelector("#unity-progress-bar-full").style.width = 100 * progress + "%";
-            }).then((instance) => {
+            }).then((unityInstance) => {
               document.querySelector("#unity-loading-bar").style.display = "none";
               document.querySelector("#unity-fullscreen-button").onclick = () => {
-                instance.SetFullscreen(1);
+                unityInstance.SetFullscreen(1);
               };
               
-              console.log("✅ Unity loaded - ready for OpenCV capture");
+              // Show welcome banner when game loads
+              setTimeout(() => {
+                document.getElementById('welcome-banner').style.display = 'block';
+              }, 1000);
               
             }).catch((message) => {
               unityShowBanner("Error loading Unity: " + message, "error");
@@ -340,32 +241,32 @@
         }
       }
 
-      // Start Unity
+      // Start the initialization process
       initializeUnity();
 
-      // Keyboard shortcuts
-      document.addEventListener('keydown', function(event) {
-        if (event.key === ' ' && event.ctrlKey) {
-          event.preventDefault();
-          if (isCapturing) {
-            stopCapture();
-          } else {
-            connectAndStart();
-          }
-        }
+      // Controls panel functionality
+      // Hide welcome banner
+      document.getElementById('start-exploring').onclick = function() {
+        document.getElementById('welcome-banner').style.display = 'none';
+      };
+      
+      // Toggle controls panel
+      document.getElementById('controls-panel').onclick = function() {
+        this.style.display = 'none';
+      };
+      
+      // Show controls panel again on double-click anywhere
+      document.addEventListener('dblclick', function() {
+        document.getElementById('controls-panel').style.display = 'block';
       });
 
-      console.log(`
-🎥 Simple Unity OpenCV Bridge Ready!
-
-Controls:
-- Click "🚀 Connect & Start" to begin capture
-- Ctrl+Space: Start/Stop capture
-- Adjust FPS with slider
-
-The system waits 3 seconds after connecting to let Unity render content,
-then starts capturing frames for your OpenCV algorithms.
-      `);
+      // Keyboard shortcut to show/hide controls (H key)
+      document.addEventListener('keydown', function(event) {
+        if (event.key === 'h' || event.key === 'H') {
+          const controlsPanel = document.getElementById('controls-panel');
+          controlsPanel.style.display = controlsPanel.style.display === 'none' ? 'block' : 'none';
+        }
+      });
     </script>
   </body>
 </html>
