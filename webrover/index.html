@@ -201,6 +201,13 @@
                 ">⏹️ Stop</button>
               </div>
               
+              <div style="margin-bottom: 10px;">
+                <button onclick="window.unityCapture.forceStartCapture()" style="
+                  background: #fd7e14; color: white; border: none; padding: 5px 10px; 
+                  border-radius: 3px; cursor: pointer; width: 100%; font-size: 11px;
+                ">⚡ Force Start (Skip Unity Check)</button>
+              </div>
+              
               <div style="margin-bottom: 8px;">
                 <label>Frame Rate: <span id="fps-display" style="color: #00A0F0; font-weight: bold;">10</span> fps</label><br>
                 <input type="range" id="fps-slider" min="1" max="30" value="10" style="width: 100%;" 
@@ -286,6 +293,22 @@
             return;
           }
           
+          // Check if Unity has actually rendered something
+          if (!this.isUnityReady()) {
+            console.warn('⚠️ Unity may not be fully loaded yet');
+            this.updateStatus('🟡 Unity Loading...', '#ffc107');
+            
+            // Try again in 2 seconds
+            setTimeout(() => {
+              if (this.isUnityReady()) {
+                this.startCapture();
+              } else {
+                console.warn('⚠️ Unity still not ready after delay');
+              }
+            }, 2000);
+            return;
+          }
+          
           this.isCapturing = true;
           this.frameCount = 0;
           this.lastCaptureTime = Date.now();
@@ -296,6 +319,62 @@
           
           console.log(`🎥 Started capturing at ${this.frameRate} fps`);
           this.updateStatus(`🟡 Capturing: ${this.frameRate} fps`, '#ffc107');
+        }
+        
+        forceStartCapture() {
+          console.log('⚡ Force starting capture (skipping Unity readiness check)');
+          
+          if (!this.canvas) {
+            console.error('❌ No canvas found');
+            return;
+          }
+          
+          this.isCapturing = true;
+          this.frameCount = 0;
+          this.lastCaptureTime = Date.now();
+          
+          this.captureInterval = setInterval(() => {
+            this.captureFrame();
+          }, 1000 / this.frameRate);
+          
+          console.log(`🎥 Force started capturing at ${this.frameRate} fps`);
+          this.updateStatus(`🟡 Force Capturing: ${this.frameRate} fps`, '#fd7e14');
+        }
+        
+        isUnityReady() {
+          // Check if Unity canvas has actual content
+          if (!this.canvas) return false;
+          
+          try {
+            // Test capture a small area to check if canvas has content
+            const testData = this.canvas.toDataURL('image/jpeg', 0.1);
+            const testImage = new Image();
+            testImage.src = testData;
+            
+            // Check if canvas is not blank (basic check)
+            const ctx = document.createElement('canvas').getContext('2d');
+            ctx.canvas.width = this.canvas.width;
+            ctx.canvas.height = this.canvas.height;
+            ctx.drawImage(this.canvas, 0, 0);
+            
+            const imageData = ctx.getImageData(0, 0, this.canvas.width, this.canvas.height);
+            const data = imageData.data;
+            
+            // Check if there's any non-black content
+            let hasContent = false;
+            for (let i = 0; i < data.length; i += 4) {
+              const r = data[i], g = data[i + 1], b = data[i + 2];
+              if (r > 10 || g > 10 || b > 10) { // Not completely black
+                hasContent = true;
+                break;
+              }
+            }
+            
+            return hasContent;
+          } catch (error) {
+            console.warn('Canvas ready check failed:', error);
+            return true; // Assume ready if check fails
+          }
         }
         
         stopCapture() {
@@ -317,6 +396,11 @@
             const base64Data = dataURL.split(',')[1];
             
             this.frameCount++;
+            
+            // Basic validation - check if frame is not empty
+            if (base64Data.length < 1000) { // Very small frame likely means blank
+              console.warn(`⚠️ Frame ${this.frameCount} seems very small (${base64Data.length} bytes) - possibly blank`);
+            }
             
             // Calculate actual FPS
             const now = Date.now();
@@ -340,18 +424,24 @@
                 width: this.canvas.width,
                 height: this.canvas.height,
                 quality: this.quality,
-                fps: this.frameRate
+                fps: this.frameRate,
+                data_size: base64Data.length
               };
               
               this.websocket.send(JSON.stringify(frameData));
               
               // Update status to show activity
               if (this.frameCount % 30 === 0) { // Every 30 frames
-                this.updateStatus(`🟢 Streaming: ${this.frameRate} fps`, '#28a745');
+                this.updateStatus(`🟢 Streaming: ${this.frameCount} frames`, '#28a745');
               }
             } else {
               // Not connected but still capturing
               this.updateStatus(`🟡 Capturing (No OpenCV)`, '#ffc107');
+            }
+            
+            // Debug logging for first few frames
+            if (this.frameCount <= 5) {
+              console.log(`📸 Frame ${this.frameCount}: ${base64Data.length} bytes, ${this.canvas.width}x${this.canvas.height}`);
             }
             
           } catch (error) {
@@ -370,6 +460,54 @@
         
         setQuality(quality) {
           this.quality = Math.max(0.1, Math.min(1.0, quality));
+        }
+        
+        testUnityReady() {
+          console.log('🧪 Testing Unity readiness...');
+          
+          if (!this.canvas) {
+            console.error('❌ No Unity canvas found');
+            this.updateStatus('🔴 No Canvas Found', '#dc3545');
+            return;
+          }
+          
+          const ready = this.isUnityReady();
+          
+          if (ready) {
+            console.log('✅ Unity appears ready - canvas has content');
+            this.updateStatus('✅ Unity Ready', '#28a745');
+            
+            // Show a preview of what we're capturing
+            try {
+              const dataURL = this.canvas.toDataURL('image/jpeg', 0.5);
+              console.log(`📸 Test capture: ${dataURL.length} bytes`);
+              
+              // Create a small preview window
+              const preview = window.open('', 'UnityPreview', 'width=400,height=300');
+              preview.document.write(`
+                <html>
+                  <head><title>Unity Canvas Preview</title></head>
+                  <body style="margin:0; text-align:center; background:#222; color:white;">
+                    <h3>Unity Canvas Test Capture</h3>
+                    <img src="${dataURL}" style="max-width:100%; max-height:80%; border:1px solid #555;">
+                    <p>Size: ${this.canvas.width}x${this.canvas.height} | Quality: ${(this.quality*100).toFixed(0)}%</p>
+                  </body>
+                </html>
+              `);
+            } catch (error) {
+              console.error('❌ Test capture failed:', error);
+            }
+          } else {
+            console.warn('⚠️ Unity not ready - canvas appears blank or black');
+            this.updateStatus('🟡 Unity Not Ready', '#ffc107');
+            
+            // Provide suggestions
+            console.log('💡 Suggestions:');
+            console.log('   1. Wait for Unity to fully load');
+            console.log('   2. Make sure the game is actually running');
+            console.log('   3. Try moving the camera or interacting with the game');
+            console.log('   4. Check if Unity is using hardware acceleration');
+          }
         }
         
         updateStatus(message, color) {
@@ -481,7 +619,16 @@
                   window.unityCapture = new UnityCanvasCapture();
                   window.unityCapture.initialize();
                   console.log('🎥 Unity Canvas Capture system ready!');
-                }, 2000);
+                  
+                  // Wait a bit more for Unity to actually render content
+                  setTimeout(() => {
+                    if (window.unityCapture.isUnityReady()) {
+                      console.log('✅ Unity appears to be rendering content');
+                    } else {
+                      console.warn('⚠️ Unity may still be loading - wait before capturing');
+                    }
+                  }, 3000);
+                }, 3000); // Increased delay
               }, 1000);
               
             }).catch((message) => {
