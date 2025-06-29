@@ -24,45 +24,60 @@
       </div>
     </div>
     
-    <!-- Simple OpenCV Panel - No Complex Features -->
-    <div id="opencv-panel" style="
+    <!-- Real-time Capture Panel -->
+    <div id="capture-panel" style="
       position: fixed;
       top: 10px;
       left: 10px;
       background: rgba(0,0,0,0.9);
       color: white;
-      padding: 15px;
-      border-radius: 8px;
+      padding: 12px;
+      border-radius: 6px;
       font-family: Arial, sans-serif;
-      font-size: 12px;
+      font-size: 11px;
       z-index: 10000;
-      border: 2px solid #28a745;
+      border: 2px solid #ff6b35;
+      min-width: 200px;
     ">
-      <div style="font-weight: bold; color: #28a745; margin-bottom: 10px;">📡 OpenCV Feed</div>
+      <div style="font-weight: bold; color: #ff6b35; margin-bottom: 8px; text-align: center;">
+        ⚡ Real-time Capture
+      </div>
       
-      <button id="connect-btn" onclick="connectAndStart()" style="
-        background: #28a745; color: white; border: none; padding: 8px; 
-        border-radius: 3px; cursor: pointer; width: 100%; margin-bottom: 5px; font-weight: bold;
-      ">🚀 Connect & Start</button>
+      <button id="start-btn" onclick="startRealTimeCapture()" style="
+        background: #ff6b35; color: white; border: none; padding: 8px; 
+        border-radius: 4px; cursor: pointer; width: 100%; margin-bottom: 6px; font-weight: bold;
+      ">🚀 Start Real-time Feed</button>
       
       <button id="stop-btn" onclick="stopCapture()" style="
-        background: #dc3545; color: white; border: none; padding: 8px; 
-        border-radius: 3px; cursor: pointer; width: 100%; margin-bottom: 10px;
+        background: #dc3545; color: white; border: none; padding: 6px; 
+        border-radius: 4px; cursor: pointer; width: 100%; margin-bottom: 8px;
       " disabled>⏹️ Stop</button>
       
-      <div style="margin-bottom: 8px;">
-        FPS: <input type="range" id="fps-slider" min="5" max="25" value="10" style="width: 70px;" onchange="updateFPS(this.value)">
-        <span id="fps-display">10</span>
+      <div style="margin-bottom: 6px; display: flex; align-items: center;">
+        <span style="width: 40px;">FPS:</span>
+        <input type="range" id="fps-slider" min="10" max="30" value="20" style="flex: 1; margin: 0 5px;" onchange="updateFPS(this.value)">
+        <span id="fps-display" style="width: 25px;">20</span>
+      </div>
+      
+      <div style="margin-bottom: 6px;">
+        <label>
+          <input type="checkbox" id="resize-640p" checked onchange="toggleResize()"> 
+          640p mode
+        </label>
       </div>
       
       <div id="status" style="
-        padding: 8px; background: rgba(220,53,69,0.3); border-radius: 4px; 
-        text-align: center; font-weight: bold; margin-bottom: 8px;
-      ">Ready to Connect</div>
+        padding: 6px; background: rgba(220,53,69,0.3); border-radius: 3px; 
+        text-align: center; font-weight: bold; font-size: 10px; margin-bottom: 6px;
+      ">Ready</div>
       
-      <div style="font-size: 10px; color: #ddd; text-align: center; padding: 5px; background: rgba(255,255,255,0.05); border-radius: 3px;">
-        Frames: <span id="frame-count">0</span> | 
-        Valid: <span id="valid-count">0</span>
+      <div style="font-size: 9px; color: #ddd; text-align: center; padding: 4px; background: rgba(255,255,255,0.05); border-radius: 2px;">
+        Sent: <span id="frame-count">0</span> | 
+        Rate: <span id="actual-fps">0</span>/s
+      </div>
+      
+      <div style="font-size: 8px; color: #888; margin-top: 6px; text-align: center;">
+        📡 Direct canvas capture for real-time OpenCV feed
       </div>
     </div>
 
@@ -70,39 +85,46 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pako/2.1.0/pako.min.js"></script>
     
     <script>
-      // Simple Unity to OpenCV Bridge
+      // Direct Real-time Unity Capture
       let websocket = null;
       let isCapturing = false;
       let captureInterval = null;
       let frameCount = 0;
-      let validFrames = 0;
-      let fps = 10;
+      let fps = 20;
+      let resize640p = true;
+      let lastFrameTime = 0;
+      let actualFPS = 0;
       
-      function connectAndStart() {
-        const canvas = document.querySelector("#unity-canvas");
-        if (!canvas) {
-          updateStatus("No Canvas Found", "#dc3545");
-          return;
-        }
+      // Create a separate capture canvas for resizing
+      const captureCanvas = document.createElement('canvas');
+      const captureCtx = captureCanvas.getContext('2d');
+      
+      function startRealTimeCapture() {
+        console.log("🚀 Starting direct real-time capture...");
         
-        updateStatus("Connecting...", "#ffc107");
-        
+        // Connect to OpenCV server
         try {
           websocket = new WebSocket("ws://localhost:8765");
           
           websocket.onopen = () => {
-            updateStatus("Connected - Starting Capture", "#28a745");
-            document.getElementById("connect-btn").disabled = true;
-            document.getElementById("stop-btn").disabled = false;
+            updateStatus("Connected - Starting...", "#28a745");
             
-            // Start capturing immediately
-            startCapture();
+            // Send ready message
+            websocket.send(JSON.stringify({
+              type: 'ready',
+              message: 'Real-time direct capture starting',
+              capture_mode: 'direct_canvas',
+              target_resolution: resize640p ? '640x400' : '960x600'
+            }));
+            
+            // Start capturing immediately with a small delay
+            setTimeout(() => {
+              startDirectCapture();
+            }, 500);
           };
           
           websocket.onclose = () => {
             updateStatus("Disconnected", "#dc3545");
-            document.getElementById("connect-btn").disabled = false;
-            document.getElementById("stop-btn").disabled = true;
             stopCapture();
           };
           
@@ -111,75 +133,107 @@
             console.error("WebSocket error:", error);
           };
           
+          websocket.onmessage = (event) => {
+            try {
+              const data = JSON.parse(event.data);
+              // Handle any responses from OpenCV server
+            } catch (e) {
+              // Ignore non-JSON messages
+            }
+          };
+          
         } catch (error) {
           updateStatus("Failed to Connect", "#dc3545");
           console.error("Connection failed:", error);
         }
       }
       
-      function startCapture() {
-        const canvas = document.querySelector("#unity-canvas");
-        if (!canvas || isCapturing) return;
+      function startDirectCapture() {
+        const unityCanvas = document.querySelector("#unity-canvas");
+        if (!unityCanvas) {
+          updateStatus("No Unity Canvas", "#dc3545");
+          return;
+        }
         
         isCapturing = true;
         frameCount = 0;
-        validFrames = 0;
+        lastFrameTime = Date.now();
         
-        // Wait 3 seconds for Unity to render something
-        updateStatus("Waiting for Unity...", "#ffc107");
+        // Set up capture canvas size
+        if (resize640p) {
+          captureCanvas.width = 640;
+          captureCanvas.height = 400;
+        } else {
+          captureCanvas.width = unityCanvas.width;
+          captureCanvas.height = unityCanvas.height;
+        }
         
-        setTimeout(() => {
-          updateStatus("Capturing...", "#17a2b8");
-          
-          captureInterval = setInterval(() => {
-            captureFrame(canvas);
-          }, 1000 / fps);
-          
-          console.log(`🎥 Started capturing at ${fps} fps`);
-        }, 3000);
+        updateStatus(`Capturing ${captureCanvas.width}x${captureCanvas.height}`, "#ff6b35");
+        document.getElementById("start-btn").disabled = true;
+        document.getElementById("stop-btn").disabled = false;
+        
+        // Start high-frequency capture
+        captureInterval = setInterval(() => {
+          captureDirectFrame(unityCanvas);
+        }, 1000 / fps);
+        
+        console.log(`✅ Direct capture started at ${fps} fps, ${captureCanvas.width}x${captureCanvas.height}`);
       }
       
-      function captureFrame(canvas) {
+      function captureDirectFrame(unityCanvas) {
         if (!isCapturing || !websocket || websocket.readyState !== WebSocket.OPEN) return;
         
         try {
-          const dataURL = canvas.toDataURL('image/jpeg', 0.85);
+          // DIRECT CANVAS CAPTURE METHOD
+          // Clear capture canvas
+          captureCtx.clearRect(0, 0, captureCanvas.width, captureCanvas.height);
+          
+          // Draw Unity canvas to our capture canvas (with optional resize)
+          captureCtx.drawImage(unityCanvas, 0, 0, captureCanvas.width, captureCanvas.height);
+          
+          // Convert to JPEG with good quality for real-time
+          const dataURL = captureCanvas.toDataURL('image/jpeg', 0.75);
           const base64Data = dataURL.split(',')[1];
+          
+          // Quick validation - real frames should be substantial
+          if (base64Data.length < 5000) {
+            // Frame too small, likely blank - but don't spam warnings in real-time mode
+            return;
+          }
           
           frameCount++;
           
-          // Simple validation - check if frame has reasonable size
-          const isValid = base64Data.length > 8000; // Frames smaller than 8KB are likely blank
-          if (isValid) validFrames++;
+          // Calculate actual FPS
+          const now = Date.now();
+          if (frameCount % 10 === 0) {
+            const timeDiff = now - lastFrameTime;
+            actualFPS = Math.round((10 * 1000) / timeDiff);
+            document.getElementById('actual-fps').textContent = actualFPS;
+            lastFrameTime = now;
+          }
           
           // Update UI
           document.getElementById('frame-count').textContent = frameCount;
-          document.getElementById('valid-count').textContent = validFrames;
           
-          // Send to OpenCV
+          // Send to OpenCV - MINIMAL DATA for speed
           const frameData = {
             type: 'camera_frame',
             image: base64Data,
             frame_number: frameCount,
-            timestamp: Date.now(),
-            width: canvas.width,
-            height: canvas.height
+            timestamp: now,
+            width: captureCanvas.width,
+            height: captureCanvas.height
           };
           
           websocket.send(JSON.stringify(frameData));
           
-          // Update status
-          if (frameCount % 30 === 0) {
-            const validPercent = Math.round((validFrames / frameCount) * 100);
-            updateStatus(`Streaming: ${validPercent}% valid`, "#28a745");
-            
-            if (validPercent < 50) {
-              console.warn("⚠️ Many frames appear blank - Unity may still be loading");
-            }
+          // Update status less frequently to avoid UI lag
+          if (frameCount % 50 === 0) {
+            updateStatus(`Streaming: ${actualFPS} fps`, "#28a745");
           }
           
         } catch (error) {
-          console.error("Capture error:", error);
+          console.error("Direct capture error:", error);
           updateStatus("Capture Error", "#dc3545");
         }
       }
@@ -197,21 +251,40 @@
         }
         
         updateStatus("Stopped", "#ffc107");
-        document.getElementById("connect-btn").disabled = false;
+        document.getElementById("start-btn").disabled = false;
         document.getElementById("stop-btn").disabled = true;
         
-        console.log(`🛑 Capture stopped. Total: ${frameCount}, Valid: ${validFrames}`);
+        console.log(`🛑 Direct capture stopped. Total frames: ${frameCount}`);
       }
       
       function updateFPS(newFPS) {
         fps = parseInt(newFPS);
         document.getElementById('fps-display').textContent = fps;
         
-        if (isCapturing) {
+        // Restart capture with new FPS if currently capturing
+        if (isCapturing && captureInterval) {
           clearInterval(captureInterval);
           captureInterval = setInterval(() => {
-            captureFrame(document.querySelector("#unity-canvas"));
+            captureDirectFrame(document.querySelector("#unity-canvas"));
           }, 1000 / fps);
+        }
+      }
+      
+      function toggleResize() {
+        resize640p = document.getElementById('resize-640p').checked;
+        console.log(`📐 Resolution mode: ${resize640p ? '640p' : 'Native'}`);
+        
+        // If currently capturing, restart to apply new resolution
+        if (isCapturing) {
+          const unityCanvas = document.querySelector("#unity-canvas");
+          if (resize640p) {
+            captureCanvas.width = 640;
+            captureCanvas.height = 400;
+          } else {
+            captureCanvas.width = unityCanvas.width;
+            captureCanvas.height = unityCanvas.height;
+          }
+          updateStatus(`Switched to ${captureCanvas.width}x${captureCanvas.height}`, "#ff6b35");
         }
       }
       
@@ -221,7 +294,7 @@
         statusDiv.style.background = `${color}33`;
       }
 
-      // Unity loading code
+      // Unity WebGL Loading Code
       var canvas = document.querySelector("#unity-canvas");
 
       function unityShowBanner(msg, type) {
@@ -322,7 +395,8 @@
                 instance.SetFullscreen(1);
               };
               
-              console.log("✅ Unity loaded - ready for OpenCV capture");
+              console.log("✅ Unity loaded - Real-time capture ready!");
+              console.log("💡 Wait for game to render, then click 'Start Real-time Feed'");
               
             }).catch((message) => {
               unityShowBanner("Error loading Unity: " + message, "error");
@@ -350,21 +424,26 @@
           if (isCapturing) {
             stopCapture();
           } else {
-            connectAndStart();
+            startRealTimeCapture();
           }
         }
       });
 
       console.log(`
-🎥 Simple Unity OpenCV Bridge Ready!
+⚡ Direct Real-time Unity Capture Ready!
+
+Features:
+- 🎯 Direct canvas-to-canvas capture method
+- 📐 640p mode for better performance  
+- ⚡ High FPS real-time streaming
+- 🔧 No frame validation delays
 
 Controls:
-- Click "🚀 Connect & Start" to begin capture
-- Ctrl+Space: Start/Stop capture
-- Adjust FPS with slider
+- Click "🚀 Start Real-time Feed" to begin
+- Ctrl+Space: Quick start/stop
+- Toggle 640p mode for performance vs quality
 
-The system waits 3 seconds after connecting to let Unity render content,
-then starts capturing frames for your OpenCV algorithms.
+This method captures directly from Unity's rendered canvas for maximum speed.
       `);
     </script>
   </body>
