@@ -23,6 +23,87 @@
         <div id="unity-build-title">Webrover</div>
       </div>
     </div>
+    
+    <!-- Controls Instructions -->
+    <div id="controls-panel" style="
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: rgba(0, 0, 0, 0.8);
+      color: white;
+      padding: 15px;
+      border-radius: 8px;
+      font-family: Arial, sans-serif;
+      font-size: 14px;
+      max-width: 200px;
+      z-index: 1000;
+      border: 2px solid #00A0F0;
+    ">
+      <div style="font-weight: bold; margin-bottom: 10px; color: #00A0F0; text-align: center;">
+        🚀 ROVER CONTROLS
+      </div>
+      <div style="margin-bottom: 8px;">
+        <strong>Movement:</strong><br>
+        <kbd style="background: #333; padding: 2px 6px; border-radius: 3px; margin: 0 2px;">W</kbd>
+        <kbd style="background: #333; padding: 2px 6px; border-radius: 3px; margin: 0 2px;">A</kbd>
+        <kbd style="background: #333; padding: 2px 6px; border-radius: 3px; margin: 0 2px;">S</kbd>
+        <kbd style="background: #333; padding: 2px 6px; border-radius: 3px; margin: 0 2px;">D</kbd>
+      </div>
+      <div style="margin-bottom: 8px;">
+        <strong>Camera Switch:</strong><br>
+        <kbd style="background: #333; padding: 2px 6px; border-radius: 3px;">C</kbd> - 1st/3rd Person
+      </div>
+      <div style="font-size: 12px; color: #ccc; text-align: center; margin-top: 10px;">
+        Click to hide →
+      </div>
+    </div>
+
+    <!-- Welcome Instructions Banner -->
+    <div id="welcome-banner" style="
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: linear-gradient(135deg, rgba(0, 160, 240, 0.95), rgba(0, 120, 200, 0.95));
+      color: white;
+      padding: 25px;
+      border-radius: 12px;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      z-index: 2000;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      max-width: 400px;
+      display: none;
+    ">
+      <h2 style="margin: 0 0 15px 0; color: white;">🚀 Welcome to Webrover!</h2>
+      <div style="font-size: 16px; margin-bottom: 15px;">
+        <strong>Controls:</strong><br>
+        <div style="margin: 10px 0;">
+          <kbd style="background: rgba(255,255,255,0.2); padding: 4px 8px; border-radius: 4px; margin: 0 3px;">W</kbd>
+          <kbd style="background: rgba(255,255,255,0.2); padding: 4px 8px; border-radius: 4px; margin: 0 3px;">A</kbd>
+          <kbd style="background: rgba(255,255,255,0.2); padding: 4px 8px; border-radius: 4px; margin: 0 3px;">S</kbd>
+          <kbd style="background: rgba(255,255,255,0.2); padding: 4px 8px; border-radius: 4px; margin: 0 3px;">D</kbd>
+          - Move Rover
+        </div>
+        <div style="margin: 10px 0;">
+          <kbd style="background: rgba(255,255,255,0.2); padding: 4px 8px; border-radius: 4px;">C</kbd>
+          - Switch Camera View
+        </div>
+      </div>
+      <button id="start-exploring" style="
+        background: rgba(255, 255, 255, 0.2);
+        border: 2px solid white;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 6px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: all 0.3s;
+      " onmouseover="this.style.background='rgba(255,255,255,0.3)'" 
+         onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+        Start Exploring! 🌍
+      </button>
+    </div>
 
     <!-- Add pako library for gzip decompression -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pako/2.1.0/pako.min.js"></script>
@@ -128,6 +209,12 @@
               document.querySelector("#unity-fullscreen-button").onclick = () => {
                 unityInstance.SetFullscreen(1);
               };
+              
+              // Show welcome banner when game loads
+              setTimeout(() => {
+                document.getElementById('welcome-banner').style.display = 'block';
+              }, 1000);
+              
             }).catch((message) => {
               unityShowBanner("Error loading Unity: " + message, "error");
             });
@@ -146,6 +233,30 @@
 
       // Start the initialization process
       initializeUnity();
+
+      // Controls panel functionality
+      // Hide welcome banner
+      document.getElementById('start-exploring').onclick = function() {
+        document.getElementById('welcome-banner').style.display = 'none';
+      };
+      
+      // Toggle controls panel
+      document.getElementById('controls-panel').onclick = function() {
+        this.style.display = 'none';
+      };
+      
+      // Show controls panel again on double-click anywhere
+      document.addEventListener('dblclick', function() {
+        document.getElementById('controls-panel').style.display = 'block';
+      });
+
+      // Keyboard shortcut to show/hide controls (H key)
+      document.addEventListener('keydown', function(event) {
+        if (event.key === 'h' || event.key === 'H') {
+          const controlsPanel = document.getElementById('controls-panel');
+          controlsPanel.style.display = controlsPanel.style.display === 'none' ? 'block' : 'none';
+        }
+      });
     </script>
   </body>
 </html>
