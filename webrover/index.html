@@ -130,7 +130,7 @@
         updateBannerVisibility();
       }
 
-      // Custom function to handle gzipped files
+      // Custom function to handle gzipped files with proper MIME types
       async function loadGzippedFile(url) {
         try {
           const response = await fetch(url);
@@ -140,8 +140,18 @@
           const compressed = await response.arrayBuffer();
           const decompressed = pako.ungzip(compressed);
           
-          // Create a blob URL for the decompressed data
-          const blob = new Blob([decompressed]);
+          // Determine the correct MIME type based on file extension
+          let mimeType = 'application/octet-stream'; // default
+          if (url.endsWith('.wasm.gz')) {
+            mimeType = 'application/wasm';
+          } else if (url.endsWith('.js.gz')) {
+            mimeType = 'application/javascript';
+          } else if (url.endsWith('.data.gz')) {
+            mimeType = 'application/octet-stream';
+          }
+          
+          // Create a blob URL with the correct MIME type
+          const blob = new Blob([decompressed], { type: mimeType });
           return URL.createObjectURL(blob);
         } catch (error) {
           console.error(`Error loading ${url}:`, error);
