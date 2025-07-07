@@ -1,3 +1,4 @@
+# this script allows you to capture your browser screen feed into a python script to be used with OpenCV and such
 import cv2
 import numpy as np
 import mss
