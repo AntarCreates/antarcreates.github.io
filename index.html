@@ -43,102 +43,110 @@
             transform: translate(-50%, -50%);
         }
 
-        /* Navigation Menu - Sidebar Style */
-        .nav-container {
+        /* Simple Hamburger Menu */
+        .hamburger-menu {
             position: fixed;
-            top: 50%;
-            left: 0;
-            transform: translateY(-50%);
+            top: 30px;
+            left: 30px;
             z-index: 1000;
+            width: 60px;
+            height: 60px;
+            background: rgba(15, 25, 35, 0.9);
+            border: 2px solid rgba(0, 160, 240, 0.3);
+            border-radius: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
             transition: all 0.3s ease;
+            backdrop-filter: blur(15px);
+            box-shadow: 
+                inset 8px 8px 12px rgba(0, 0, 0, 0.3),
+                inset -8px -8px 12px rgba(255, 255, 255, 0.05),
+                0 8px 25px rgba(0, 160, 240, 0.15);
+        }
+
+        .hamburger-menu:hover {
+            background: rgba(0, 160, 240, 0.1);
+            border-color: #00A0F0;
+            transform: scale(1.05);
+            box-shadow: 
+                inset 8px 8px 12px rgba(0, 0, 0, 0.2),
+                inset -8px -8px 12px rgba(255, 255, 255, 0.08),
+                0 12px 30px rgba(0, 160, 240, 0.25);
+        }
+
+        .hamburger-line {
+            width: 25px;
+            height: 3px;
+            background: #00A0F0;
+            margin: 2px 0;
+            transition: all 0.3s ease;
+            border-radius: 2px;
+        }
+
+        .hamburger-menu.active .hamburger-line:nth-child(1) {
+            transform: rotate(45deg) translate(5px, 5px);
+        }
+
+        .hamburger-menu.active .hamburger-line:nth-child(2) {
+            opacity: 0;
+        }
+
+        .hamburger-menu.active .hamburger-line:nth-child(3) {
+            transform: rotate(-45deg) translate(7px, -6px);
+        }
+
+        /* Navigation Overlay */
+        .nav-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 17, 0.95);
+            backdrop-filter: blur(20px);
+            z-index: 999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .nav-overlay.active {
+            opacity: 1;
+            visibility: visible;
         }
 
         .nav-menu {
             display: flex;
             flex-direction: column;
-            align-items: flex-start;
-            transform: translateX(-80%);
-            transition: transform 0.3s ease;
-        }
-
-        .nav-menu:hover {
-            transform: translateX(0);
-        }
-
-        .nav-indicator {
-            position: absolute;
-            right: -15px;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 30px;
-            height: 60px;
-            background: rgba(0, 160, 240, 0.2);
-            border: 2px solid rgba(0, 160, 240, 0.5);
-            border-left: none;
-            border-radius: 0 15px 15px 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            backdrop-filter: blur(10px);
-            transition: all 0.3s ease;
-        }
-
-        .nav-indicator::before {
-            content: '▶';
-            color: #00A0F0;
-            font-size: 12px;
-            transition: transform 0.3s ease;
-        }
-
-        .nav-menu:hover .nav-indicator::before {
-            transform: rotate(180deg);
-        }
-
-        .nav-menu:hover .nav-indicator {
-            background: rgba(0, 160, 240, 0.3);
-            border-color: #00A0F0;
-        }
-
-        .nav-buttons {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            padding: 20px 15px;
-            background: rgba(0, 11, 17, 0.9);
-            border: 2px solid rgba(0, 160, 240, 0.3);
-            border-left: none;
-            border-radius: 0 20px 20px 0;
-            backdrop-filter: blur(15px);
-            box-shadow: 5px 0 25px rgba(0, 0, 0, 0.3);
+            gap: 2rem;
+            text-align: center;
         }
 
         .nav-btn {
-            padding: 12px 20px;
+            padding: 20px 40px;
             background: rgba(0, 160, 240, 0.1);
             border: 2px solid rgba(0, 160, 240, 0.3);
             border-radius: 25px;
             color: #ffffff;
             text-decoration: none;
             font-weight: 600;
-            font-size: 0.9rem;
+            font-size: 1.2rem;
             transition: all 0.3s ease;
-            min-width: 140px;
-            text-align: center;
             display: block;
+            backdrop-filter: blur(10px);
         }
 
         .nav-btn:hover {
             background: rgba(0, 160, 240, 0.25);
             border-color: #00A0F0;
-            transform: translateX(10px);
-            box-shadow: 0 5px 20px rgba(0, 160, 240, 0.4);
-        }
-
-        .nav-btn.active {
-            background: rgba(0, 160, 240, 0.4);
-            border-color: #00A0F0;
-            box-shadow: 0 0 15px rgba(0, 160, 240, 0.6);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 160, 240, 0.4);
         }
 
         /* Space Background */
@@ -213,6 +221,179 @@
             padding: 2rem;
             position: relative;
             z-index: 1;
+        }
+
+        /* Featured Section */
+        .featured-section {
+            width: 100%;
+            max-width: 1000px;
+            margin: 2rem 0;
+            padding: 2rem;
+            background: rgba(0, 160, 240, 0.05);
+            border: 2px solid rgba(0, 160, 240, 0.2);
+            border-radius: 20px;
+            backdrop-filter: blur(15px);
+            box-shadow: 0 15px 35px rgba(0, 160, 240, 0.1);
+            opacity: 0;
+            animation: fadeInUp 1s ease 2.5s forwards;
+        }
+
+        /* Video Container */
+        .video-container {
+            width: 100%;
+            max-width: 600px;
+            margin: 2rem auto;
+            position: relative;
+        }
+
+        .video-thumbnail {
+            position: relative;
+            width: 100%;
+            height: 338px;
+            border-radius: 15px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0, 160, 240, 0.2);
+        }
+
+        .video-thumbnail:hover {
+            transform: scale(1.02);
+            box-shadow: 0 15px 40px rgba(0, 160, 240, 0.3);
+        }
+
+        .thumbnail-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: all 0.3s ease;
+        }
+
+        .video-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .video-thumbnail:hover .video-overlay {
+            background: rgba(0, 0, 0, 0.6);
+        }
+
+        .play-button {
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .video-thumbnail:hover .play-button {
+            transform: scale(1.1);
+        }
+
+        .play-button svg {
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+        }
+
+        .video-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 0.5rem;
+            text-align: center;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .video-subtitle {
+            font-size: 1rem;
+            color: #cccccc;
+            text-align: center;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+        }
+
+        .featured-badge {
+            display: inline-block;
+            padding: 8px 16px;
+            background: linear-gradient(45deg, #00A0F0, #66fcf1);
+            color: #000011;
+            font-weight: 700;
+            font-size: 0.9rem;
+            border-radius: 20px;
+            margin-bottom: 1rem;
+            animation: pulse-glow 2s infinite;
+        }
+
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 20px rgba(0, 160, 240, 0.3); }
+            50% { box-shadow: 0 0 30px rgba(0, 160, 240, 0.6); }
+        }
+
+        .featured-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, #00A0F0, #66fcf1);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradient-shift 3s ease infinite;
+        }
+
+        .featured-description {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+            color: #cccccc;
+        }
+
+        .featured-links {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .featured-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            background: rgba(0, 160, 240, 0.1);
+            border: 2px solid rgba(0, 160, 240, 0.3);
+            border-radius: 25px;
+            color: #ffffff;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .featured-link::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .featured-link:hover::before {
+            left: 100%;
+        }
+
+        .featured-link:hover {
+            background: rgba(0, 160, 240, 0.2);
+            border-color: #00A0F0;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 160, 240, 0.3);
         }
 
         /* Astronaut Avatar */
@@ -292,37 +473,6 @@
         @keyframes fadeInUp {
             from { opacity: 0; transform: translateY(30px); }
             to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* Tech Stack Icons */
-        .tech-stack {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1rem;
-            justify-content: center;
-            margin-bottom: 2rem;
-            opacity: 0;
-            animation: fadeInUp 1s ease 3.5s forwards;
-        }
-
-        .tech-icon {
-            width: 60px;
-            height: 60px;
-            background: rgba(0, 160, 240, 0.1);
-            border: 2px solid #00A0F0;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-
-        .tech-icon:hover {
-            transform: translateY(-10px) scale(1.1);
-            box-shadow: 0 10px 25px rgba(0, 160, 240, 0.3);
-            background: rgba(0, 160, 240, 0.2);
         }
 
         /* Resume Download Section */
@@ -421,58 +571,62 @@
             background: rgba(0, 160, 240, 0.2);
         }
 
-        /* Rocket Animation - Removed */
-
         /* Responsive Design */
         @media (max-width: 768px) {
             .container {
                 padding: 1rem;
             }
             
-            .nav-container {
+            .hamburger-menu {
                 top: 20px;
-                left: 0;
-                transform: none;
-            }
-            
-            .nav-menu {
-                transform: translateX(-85%);
-            }
-            
-            .nav-buttons {
-                padding: 15px 10px;
-            }
-            
-            .nav-btn {
-                min-width: 120px;
-                font-size: 0.8rem;
-                padding: 10px 15px;
-            }
-            
-            .nav-indicator {
-                width: 25px;
+                left: 20px;
+                width: 50px;
                 height: 50px;
-                right: -12px;
             }
             
-            .nav-indicator::before {
-                font-size: 10px;
+            .hamburger-line {
+                width: 20px;
+                height: 2px;
+            }
+            
+            .featured-section {
+                padding: 1.5rem;
+                margin: 1rem 0;
+            }
+            
+            .video-container {
+                max-width: 100%;
+            }
+            
+            .video-thumbnail {
+                height: 250px;
+            }
+            
+            .video-title {
+                font-size: 1.1rem;
+            }
+            
+            .video-subtitle {
+                font-size: 0.9rem;
+            }
+            
+            .featured-title {
+                font-size: 1.5rem;
+            }
+            
+            .featured-description {
+                font-size: 1rem;
+            }
+            
+            .featured-links {
+                flex-direction: column;
+                align-items: center;
             }
             
             .social-links {
                 flex-direction: column;
                 align-items: center;
                 gap: 1rem;
-            }
-            
-            .tech-stack {
-                gap: 0.5rem;
-            }
-            
-            .tech-icon {
-                width: 50px;
-                height: 50px;
-                font-size: 20px;
             }
         }
 
@@ -510,20 +664,24 @@
     <!-- Custom UFO Cursor -->
     <div class="cursor">🛸</div>
 
-    <!-- Navigation Menu -->
-    <nav class="nav-container">
+    <!-- Simple Hamburger Menu -->
+    <div class="hamburger-menu" id="hamburger">
+        <div class="hamburger-line"></div>
+        <div class="hamburger-line"></div>
+        <div class="hamburger-line"></div>
+    </div>
+
+    <!-- Navigation Overlay -->
+    <div class="nav-overlay" id="navOverlay">
         <div class="nav-menu">
-            <div class="nav-buttons">
-                <a href="index.html" class="nav-btn active">🏠 Home</a>
-                <a href="projects.html" class="nav-btn">🚀 Projects</a>
-                <a href="research.html" class="nav-btn">🔬 Research</a>
-                <a href="activities.html" class="nav-btn">⚡ Activities</a>
-                <a href="achievements.html" class="nav-btn">🏆 Achievements</a>
-                <a href="contact.html" class="nav-btn">📡 Contact</a>
-            </div>
-            <div class="nav-indicator"></div>
+            <a href="index.html" class="nav-btn">🏠 Home</a>
+            <a href="projects.html" class="nav-btn">🚀 Projects</a>
+            <a href="research.html" class="nav-btn">🔬 Research</a>
+            <a href="activities.html" class="nav-btn">⚡ Activities</a>
+            <a href="achievements.html" class="nav-btn">🏆 Achievements</a>
+            <a href="contact.html" class="nav-btn">📡 Contact</a>
         </div>
-    </nav>
+    </div>
 
     <!-- Loading Screen -->
     <div class="loading">
@@ -555,6 +713,39 @@
             I'm an <strong>ML Engineer at FringeCore</strong>, specializing in computer vision with a BSc in Mechatronics Engineering from RUET. My mission is focused on robot perception and digital twin-incorporated robotics, with a strong emphasis on <strong>space robotics</strong> and terrain reconstruction for extraterrestrial exploration.
         </div>
 
+        <!-- Featured Section -->
+        <div class="featured-section">
+            <div class="featured-badge">🌟 RECENTLY FEATURED</div>
+            <h2 class="featured-title">RoSE Terrain Generator (RTG)</h2>
+            <p class="featured-description">
+                I was recently invited to present my latest research on <strong>RoSE Terrain Generator (RTG)</strong> - a fully monocular depth estimation based terrain generator that creates simulation-ready terrain files for environments like Gazebo and Isaac Sim from just an aerial picture. This breakthrough enables rapid terrain reconstruction for space robotics and autonomous exploration missions.
+            </p>
+            
+            <!-- Video Thumbnail -->
+            <div class="video-container">
+                <div class="video-thumbnail" onclick="playVideo()">
+                    <div class="video-overlay">
+                        <div class="play-button">
+                            <svg width="60" height="60" viewBox="0 0 60 60" fill="none">
+                                <circle cx="30" cy="30" r="30" fill="rgba(0, 160, 240, 0.8)"/>
+                                <polygon points="23,18 23,42 41,30" fill="white"/>
+                            </svg>
+                        </div>
+                        <div class="video-title">🎥 Watch My Invited Talk</div>
+                        <div class="video-subtitle">Gazebo Community Meeting - RTG Presentation</div>
+                    </div>
+                    <img src="https://via.placeholder.com/600x338/1B2735/00A0F0?text=RTG+Presentation+Thumbnail" alt="RTG Presentation Thumbnail" class="thumbnail-image">
+                </div>
+                <iframe id="videoPlayer" width="100%" height="338" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="display: none; border-radius: 15px;"></iframe>
+            </div>
+            
+            <div class="featured-links">
+                <a href="https://discourse.ros.org/t/ros-news-for-the-week-of-february-24th-2025/40476" class="featured-link" target="_blank">
+                    📰 ROS News Feature
+                </a>
+            </div>
+        </div>
+
         <div class="resume-section">
             <a href="https://drive.google.com/file/d/1y8eLagk7WGG6UBgkXhPJPQGPhAZo1fi4/view" class="resume-btn" target="_blank">
                 📄 Download My Resume
@@ -578,17 +769,6 @@
                 🌐 Website
             </a>
         </div>
-
-        <!-- <div class="tech-stack">
-            <div class="tech-icon" title="Python">🐍</div>
-            <div class="tech-icon" title="PyTorch">🔥</div>
-            <div class="tech-icon" title="Computer Vision">👁️</div>
-            <div class="tech-icon" title="ROS">🤖</div>
-            <div class="tech-icon" title="3D Modeling">🎯</div>
-            <div class="tech-icon" title="Space Tech">🛰️</div>
-            <div class="tech-icon" title="AI/ML">🧠</div>
-            <div class="tech-icon" title="Robotics">⚙️</div>
-        </div> -->
     </div>
 
     <script>
@@ -602,7 +782,7 @@
         });
 
         // Hide UFO cursor when hovering over clickable elements
-        const clickableElements = document.querySelectorAll('a, button, .clickable, .tech-icon');
+        const clickableElements = document.querySelectorAll('a, button, .clickable, .hamburger-menu');
         
         clickableElements.forEach(element => {
             element.addEventListener('mouseenter', () => {
@@ -616,29 +796,28 @@
             });
         });
 
-        // Navigation Management
-        const navButtons = document.querySelectorAll('.nav-btn');
-        
-        // Set active button based on current page
-        const currentPage = window.location.pathname.split('/').pop() || 'index.html';
-        
-        navButtons.forEach(btn => {
-            const btnHref = btn.getAttribute('href');
-            btn.classList.remove('active');
-            
-            if (btnHref === currentPage || 
-                (currentPage === '' && btnHref === 'index.html') ||
-                (currentPage === 'index.html' && btnHref === 'index.html')) {
-                btn.classList.add('active');
+        // Hamburger Menu Toggle
+        const hamburger = document.getElementById('hamburger');
+        const navOverlay = document.getElementById('navOverlay');
+
+        hamburger.addEventListener('click', () => {
+            hamburger.classList.toggle('active');
+            navOverlay.classList.toggle('active');
+        });
+
+        // Close menu when clicking on overlay
+        navOverlay.addEventListener('click', (e) => {
+            if (e.target === navOverlay) {
+                hamburger.classList.remove('active');
+                navOverlay.classList.remove('active');
             }
         });
 
-        // Add click tracking (optional analytics)
-        navButtons.forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                const target = btn.getAttribute('href');
-                console.log(`Navigating to: ${target}`);
-                // Add any analytics tracking here if needed
+        // Close menu when clicking on nav items
+        document.querySelectorAll('.nav-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                hamburger.classList.remove('active');
+                navOverlay.classList.remove('active');
             });
         });
 
@@ -679,12 +858,10 @@
         // Typewriter Effect
         function typeWriter() {
             const texts = [
-
                 "Machine Learning Engineer",
                 "Robotics Generalist",
                 "Space Robotics Researcher",
                 "Mechatronics Engineering Graduate"
-                
             ];
             
             let textIndex = 0;
@@ -736,23 +913,24 @@
             });
         });
 
+        // Play Video Function
+        function playVideo() {
+            const thumbnail = document.querySelector('.video-thumbnail');
+            const videoPlayer = document.getElementById('videoPlayer');
+            
+            // Replace with your actual video URL
+            const videoUrl = 'https://www.youtube.com/embed/YOUR_VIDEO_ID?autoplay=1&rel=0';
+            
+            thumbnail.style.display = 'none';
+            videoPlayer.style.display = 'block';
+            videoPlayer.src = videoUrl;
+        }
+
         // Initialize Animations
         document.addEventListener('DOMContentLoaded', () => {
             createStars();
             createParticles();
             typeWriter();
-            
-            // Add hover effects to tech icons
-            const techIcons = document.querySelectorAll('.tech-icon');
-            techIcons.forEach(icon => {
-                icon.addEventListener('mouseenter', () => {
-                    icon.style.transform = 'translateY(-10px) scale(1.1) rotateY(180deg)';
-                });
-                
-                icon.addEventListener('mouseleave', () => {
-                    icon.style.transform = 'translateY(0) scale(1) rotateY(0deg)';
-                });
-            });
         });
 
         // Smooth scroll behavior
