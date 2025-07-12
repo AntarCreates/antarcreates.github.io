@@ -235,85 +235,7 @@
             backdrop-filter: blur(15px);
             box-shadow: 0 15px 35px rgba(0, 160, 240, 0.1);
             opacity: 0;
-            animation: fadeInUp 1s ease 2.5s forwards;
-        }
-
-        /* Video Container */
-        .video-container {
-            width: 100%;
-            max-width: 600px;
-            margin: 2rem auto;
-            position: relative;
-        }
-
-        .video-thumbnail {
-            position: relative;
-            width: 100%;
-            height: 338px;
-            border-radius: 15px;
-            overflow: hidden;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 10px 30px rgba(0, 160, 240, 0.2);
-        }
-
-        .video-thumbnail:hover {
-            transform: scale(1.02);
-            box-shadow: 0 15px 40px rgba(0, 160, 240, 0.3);
-        }
-
-        .thumbnail-image {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: all 0.3s ease;
-        }
-
-        .video-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.4);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            transition: all 0.3s ease;
-        }
-
-        .video-thumbnail:hover .video-overlay {
-            background: rgba(0, 0, 0, 0.6);
-        }
-
-        .play-button {
-            margin-bottom: 1rem;
-            transition: all 0.3s ease;
-        }
-
-        .video-thumbnail:hover .play-button {
-            transform: scale(1.1);
-        }
-
-        .play-button svg {
-            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
-        }
-
-        .video-title {
-            font-size: 1.3rem;
-            font-weight: 700;
-            color: white;
-            margin-bottom: 0.5rem;
-            text-align: center;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-        }
-
-        .video-subtitle {
-            font-size: 1rem;
-            color: #cccccc;
-            text-align: center;
-            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+            animation: fadeInUp 1s ease 1.5s forwards;
         }
 
         .featured-badge {
@@ -594,22 +516,6 @@
                 margin: 1rem 0;
             }
             
-            .video-container {
-                max-width: 100%;
-            }
-            
-            .video-thumbnail {
-                height: 250px;
-            }
-            
-            .video-title {
-                font-size: 1.1rem;
-            }
-            
-            .video-subtitle {
-                font-size: 0.9rem;
-            }
-            
             .featured-title {
                 font-size: 1.5rem;
             }
@@ -709,10 +615,6 @@
             <span id="typewriter" class="typewriter"></span>
         </div>
 
-        <div class="mission">
-            I'm an <strong>ML Engineer at FringeCore</strong>, specializing in computer vision with a BSc in Mechatronics Engineering from RUET. My mission is focused on robot perception and digital twin-incorporated robotics, with a strong emphasis on <strong>space robotics</strong> and terrain reconstruction for extraterrestrial exploration.
-        </div>
-
         <!-- Featured Section -->
         <div class="featured-section">
             <div class="featured-badge">🌟 RECENTLY FEATURED</div>
@@ -720,30 +622,18 @@
             <p class="featured-description">
                 I was recently invited to present my latest research on <strong>RoSE Terrain Generator (RTG)</strong> - a fully monocular depth estimation based terrain generator that creates simulation-ready terrain files for environments like Gazebo and Isaac Sim from just an aerial picture. This breakthrough enables rapid terrain reconstruction for space robotics and autonomous exploration missions.
             </p>
-            
-            <!-- Video Thumbnail -->
-            <div class="video-container">
-                <div class="video-thumbnail" onclick="playVideo()">
-                    <div class="video-overlay">
-                        <div class="play-button">
-                            <svg width="60" height="60" viewBox="0 0 60 60" fill="none">
-                                <circle cx="30" cy="30" r="30" fill="rgba(0, 160, 240, 0.8)"/>
-                                <polygon points="23,18 23,42 41,30" fill="white"/>
-                            </svg>
-                        </div>
-                        <div class="video-title">🎥 Watch My Invited Talk</div>
-                        <div class="video-subtitle">Gazebo Community Meeting - RTG Presentation</div>
-                    </div>
-                    <img src="https://via.placeholder.com/600x338/1B2735/00A0F0?text=RTG+Presentation+Thumbnail" alt="RTG Presentation Thumbnail" class="thumbnail-image">
-                </div>
-                <iframe id="videoPlayer" width="100%" height="338" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="display: none; border-radius: 15px;"></iframe>
-            </div>
-            
             <div class="featured-links">
                 <a href="https://discourse.ros.org/t/ros-news-for-the-week-of-february-24th-2025/40476" class="featured-link" target="_blank">
                     📰 ROS News Feature
                 </a>
+                <a href="https://vimeo.com/945234567" class="featured-link" target="_blank">
+                    🎥 Invited Talk - Gazebo Community
+                </a>
             </div>
+        </div>
+
+        <div class="mission">
+            I'm an <strong>ML Engineer at FringeCore</strong>, specializing in computer vision with a BSc in Mechatronics Engineering from RUET. My mission is focused on robot perception and digital twin-incorporated robotics, with a strong emphasis on <strong>space robotics</strong> and terrain reconstruction for extraterrestrial exploration.
         </div>
 
         <div class="resume-section">
@@ -912,19 +802,6 @@
                 }
             });
         });
-
-        // Play Video Function
-        function playVideo() {
-            const thumbnail = document.querySelector('.video-thumbnail');
-            const videoPlayer = document.getElementById('videoPlayer');
-            
-            // Replace with your actual video URL
-            const videoUrl = 'https://www.youtube.com/embed/YOUR_VIDEO_ID?autoplay=1&rel=0';
-            
-            thumbnail.style.display = 'none';
-            videoPlayer.style.display = 'block';
-            videoPlayer.src = videoUrl;
-        }
 
         // Initialize Animations
         document.addEventListener('DOMContentLoaded', () => {
