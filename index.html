@@ -493,6 +493,173 @@
             background: rgba(0, 160, 240, 0.2);
         }
 
+        /* Research Interests Section */
+        .research-section {
+            width: 100%;
+            max-width: 1000px;
+            margin: 2rem 0;
+            padding: 2rem;
+            background: rgba(0, 160, 240, 0.05);
+            border: 2px solid rgba(0, 160, 240, 0.2);
+            border-radius: 20px;
+            backdrop-filter: blur(15px);
+            box-shadow: 0 15px 35px rgba(0, 160, 240, 0.1);
+            opacity: 0;
+            animation: fadeInUp 1s ease 2s forwards;
+        }
+
+        .section-badge {
+            display: inline-block;
+            padding: 8px 16px;
+            background: linear-gradient(45deg, #00A0F0, #66fcf1);
+            color: #000011;
+            font-weight: 700;
+            font-size: 0.9rem;
+            border-radius: 20px;
+            margin-bottom: 1.5rem;
+            animation: pulse-glow 2s infinite;
+        }
+
+        .research-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .research-item {
+            padding: 15px 20px;
+            background: rgba(0, 160, 240, 0.1);
+            border: 2px solid rgba(0, 160, 240, 0.3);
+            border-radius: 15px;
+            text-align: center;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .research-item:hover {
+            background: rgba(0, 160, 240, 0.2);
+            border-color: #00A0F0;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 160, 240, 0.3);
+        }
+
+        /* Current Position Section */
+        .position-section {
+            width: 100%;
+            max-width: 1000px;
+            margin: 2rem 0;
+            padding: 2rem;
+            background: rgba(102, 252, 241, 0.05);
+            border: 2px solid rgba(102, 252, 241, 0.2);
+            border-radius: 20px;
+            backdrop-filter: blur(15px);
+            box-shadow: 0 15px 35px rgba(102, 252, 241, 0.1);
+            opacity: 0;
+            animation: fadeInUp 1s ease 2.2s forwards;
+        }
+
+        .position-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(45deg, #66fcf1, #00A0F0);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradient-shift 3s ease infinite;
+        }
+
+        .position-org {
+            font-size: 1.1rem;
+            color: #66fcf1;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .position-details p {
+            margin: 0.5rem 0;
+            line-height: 1.6;
+            color: #cccccc;
+        }
+
+        /* Publications Section */
+        .publications-section {
+            width: 100%;
+            max-width: 1000px;
+            margin: 2rem 0;
+            padding: 2rem;
+            background: rgba(69, 162, 158, 0.05);
+            border: 2px solid rgba(69, 162, 158, 0.2);
+            border-radius: 20px;
+            backdrop-filter: blur(15px);
+            box-shadow: 0 15px 35px rgba(69, 162, 158, 0.1);
+            opacity: 0;
+            animation: fadeInUp 1s ease 2.8s forwards;
+        }
+
+        .publication-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .publication-item {
+            padding: 1.5rem;
+            background: rgba(69, 162, 158, 0.1);
+            border: 2px solid rgba(69, 162, 158, 0.3);
+            border-radius: 15px;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .publication-item:hover {
+            background: rgba(69, 162, 158, 0.2);
+            border-color: #45a29e;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(69, 162, 158, 0.3);
+        }
+
+        .publication-item h4 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: #ffffff;
+        }
+
+        .publication-authors {
+            font-style: italic;
+            color: #45a29e;
+            margin-bottom: 0.3rem;
+        }
+
+        .publication-venue {
+            color: #cccccc;
+            margin-bottom: 1rem;
+        }
+
+        .publication-link {
+            display: inline-block;
+            padding: 8px 16px;
+            background: rgba(69, 162, 158, 0.2);
+            border: 2px solid rgba(69, 162, 158, 0.4);
+            border-radius: 20px;
+            color: #ffffff;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .publication-link:hover {
+            background: rgba(69, 162, 158, 0.3);
+            border-color: #45a29e;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(69, 162, 158, 0.4);
+        }
+
         /* Responsive Design */
         @media (max-width: 768px) {
             .container {
@@ -511,28 +678,36 @@
                 height: 2px;
             }
             
-            .featured-section {
+            .featured-section, .research-section, .position-section, .publications-section {
                 padding: 1.5rem;
                 margin: 1rem 0;
             }
-            
-            .featured-title {
-                font-size: 1.5rem;
+
+            .featured-title, .position-title {
+                font-size: 1.3rem;
             }
-            
+
             .featured-description {
                 font-size: 1rem;
             }
-            
+
             .featured-links {
                 flex-direction: column;
                 align-items: center;
             }
-            
+
+            .research-grid {
+                grid-template-columns: 1fr;
+            }
+
             .social-links {
                 flex-direction: column;
                 align-items: center;
                 gap: 1rem;
+            }
+
+            .publication-item h4 {
+                font-size: 1.1rem;
             }
         }
 
@@ -634,26 +809,77 @@
 
 
 
+        <!-- Research Interests Section -->
+        <div class="research-section">
+            <div class="section-badge">🔬 RESEARCH INTERESTS</div>
+            <div class="research-grid">
+                <div class="research-item">🤖 Robot Perception</div>
+                <div class="research-item">🧭 Navigation</div>
+                <div class="research-item">🪐 Planetary Explorers</div>
+                <div class="research-item">👥 Digital Twin</div>
+                <div class="research-item">🗺️ SLAM</div>
+                <div class="research-item">🦆 Swarm as Secondary Explorers (SaSE)</div>
+                <div class="research-item">🦾 Robotic Prostheses</div>
+                <div class="research-item">🧠 Deep Learning</div>
+            </div>
+        </div>
+
+        <!-- Current Position -->
+        <div class="position-section">
+            <div class="section-badge">🚀 CURRENT POSITION</div>
+            <h3 class="position-title">Graduate Research Assistant & Digital Twin Sub-team Lead</h3>
+            <p class="position-org">Robotic Space Exploration (RoSE) Lab | Colorado School of Mines</p>
+            <div class="position-details">
+                <p>• Researching high RTF simulation backend for digital twin reconstruction</p>
+                <p>• Engineering multi-modal robot perception for robotic space exploration</p>
+                <p>• Reconstructing the digital twin of Mines Lunar Surface Simulation (MLSS) testbed</p>
+                <p>• Contributing to mission-driven space robotics research under Dr. Frankie Zhu (PI)</p>
+            </div>
+        </div>
+
 <div class="mission">
-  <p>Hey there! I’m an incoming PhD student in Robotics (focused on Space Robotics) at the Colorado School of Mines. Before diving into deep space (literally and academically), I worked as a Machine Learning Engineer, mostly in computer vision, and earned my BSc in Mechatronics Engineering from RUET.</p>
+  <p>Hey there! I'm a PhD student in Robotics (focused on Space Robotics) at the Colorado School of Mines, working in the Robotic Space Exploration (RoSE) Lab. Currently serving as Graduate Research Assistant & Digital Twin Sub-team Lead, I'm diving deep into space robotics research while building the future of planetary exploration.</p>
 
-  <p>My research vibe? Mostly around robot perception, digital twins, and how we can make robots actually understand and navigate the wild unknown—think lava tubes on Mars. I’ve also tinkered with human-robot interaction and robotic exoskeletons (because who doesn’t want to build real-life sci-fi?).</p>
+  <p>My research revolves around robot perception, digital twins, and autonomous navigation in extreme environments—think Mars lava tubes and lunar surfaces. I've also worked extensively in machine learning, computer vision, and human-robot interaction, with a special interest in making robots truly understand and navigate the unknown.</p>
 
-  <p>Some fav projects:</p>
+  <p>Recent highlights:</p>
   <ul>
-    <li>Six-wheeled rover sim for 3D mapping Martian caves — featured in ROS News (Jan 2022)</li>
-    <li>RTG – a monocular depth estimation-based terrain generator — featured again in ROS News (Feb 2025)</li>
+    <li>🏆 <strong>11th Global Position</strong> - International Rover Design Challenge 2023 (Team Lead)</li>
+    <li>📰 <strong>Featured twice in ROS News</strong> - Martian cave mapping (2022) & RTG terrain generator (2025)</li>
+    <li>🎤 <strong>Invited Speaker</strong> - Gazebo Community Meeting (April 2025)</li>
+    <li>📚 <strong>114+ Citations</strong> - Digital twins in robotics research paper</li>
   </ul>
 
-  <p>I’ve also written about digital twins in robotics and navigation in off-world terrains. Oh—and I led Team Ogrodoot to rank 11th globally in the International Rover Design Challenge 2023. Proud nerd moment.</p>
-
-  <p>When I'm not debugging or building things that crawl across Mars or Moon, you’ll probably find me geeking out over open-source robotics, dreaming up wild space missions, or tinkering with ROS packages way too late at night.</p>
+  <p>When I'm not building robots that explore other worlds, you'll find me contributing to open-source robotics, writing research papers on autonomous exploration, or staying up way too late perfecting ROS packages. Currently working on breakthrough technologies for space missions at one of the top robotics programs in the world!</p>
 </div>
 
 
+        <!-- Publications Section -->
+        <div class="publications-section">
+            <div class="section-badge">📚 RECENT PUBLICATIONS</div>
+            <div class="publication-list">
+                <div class="publication-item">
+                    <h4>L-VITeX: Light-weight Visual Intuition for Terrain Exploration</h4>
+                    <p class="publication-authors">Mazumder, A., and Madhiha, Z. A., 2024</p>
+                    <p class="publication-venue">arXiv preprint</p>
+                    <a href="https://arxiv.org/abs/2410.07872" class="publication-link" target="_blank">📖 Read Paper</a>
+                </div>
+                <div class="publication-item">
+                    <h4>Towards next generation digital twin in robotics: Trends, scopes, challenges, and future</h4>
+                    <p class="publication-authors">Mazumder, A., et al., 2023</p>
+                    <p class="publication-venue">Heliyon, 9(2) | <strong>114+ Citations</strong></p>
+                </div>
+                <div class="publication-item">
+                    <h4>Performance Evaluation of Navigation Schemes for Autonomous Exploration of a Secondary Explorer Rover in a Martian Lava Cave</h4>
+                    <p class="publication-authors">Mazumder, A., et al., 2022</p>
+                    <p class="publication-venue">IEEE Region 10 Symposium (TENSYMP)</p>
+                </div>
+            </div>
+        </div>
+
         <div class="resume-section">
-            <a href="https://drive.google.com/file/d/1y8eLagk7WGG6UBgkXhPJPQGPhAZo1fi4/view" class="resume-btn" target="_blank">
-                📄 Download My Resume
+            <a href="files/CV_Antar_Mazumder_Mines.pdf" class="resume-btn" target="_blank">
+                📄 Download My CV
             </a>
         </div>
 

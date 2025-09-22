@@ -597,13 +597,62 @@
             <p class="page-subtitle">Exploring the cosmos through robotics, AI, and space technology</p>
         </header>
 
+        <!-- 2025 Projects -->
+        <section class="year-section">
+            <div class="year-header">
+                <h2 class="year-title">2025</h2>
+                <p class="year-subtitle">Zero-Shot Terrain Generation & Space Robotics</p>
+            </div>
+
+            <div class="tabloids-grid">
+                <div class="tabloid-container">
+                    <div class="tabloid" onclick="flipTabloid(this)">
+                        <div class="tabloid-face tabloid-front">
+                            <h3 class="tabloid-title">RoSE Terrain Generator (RTG)</h3>
+                            <!-- IMAGE: Replace with your project image -->
+                            <div class="tabloid-image" style="background-image: url('files/rtg.png');">
+                                <div class="tabloid-date">February 2025</div>
+                                <div class="tabloid-links">
+                                    <a href="https://discourse.ros.org/t/ros-news-for-the-week-of-february-24th-2025/40476" class="tabloid-link" target="_blank" onclick="event.stopPropagation()">📰 ROS News</a>
+                                    <a href="https://vimeo.com/945234567" class="tabloid-link" target="_blank" onclick="event.stopPropagation()">🎥 Gazebo Talk</a>
+                                </div>
+                            </div>
+                            <button class="flip-hint">Learn More</button>
+                        </div>
+
+                        <div class="tabloid-face tabloid-back">
+                            <h4>Project Details</h4>
+                            <div class="tabloid-description">
+                                <ul>
+                                    <li>Developed a zero-shot terrain generator that converts a single monocular aerial image into a 3D terrain mesh, ready for use in robotic simulators like Isaac Sim and Gazebo.</li>
+                                    <li>Integrated multimodal sensing data to enhance terrain fidelity for space robotics and autonomous rover simulations.</li>
+                                    <li>Enabled rapid generation of virtual testbeds for planetary and extreme environment exploration, reducing dependence on satellite or multi-angle drone data.</li>
+                                    <li>Featured in ROS News for the Week, February 24th, 2025, and presented as an invited talk at the Gazebo Community Meeting, April 30th, 2025.</li>
+                                </ul>
+                            </div>
+                            <div class="tabloid-skills">
+                                <span class="skill-tag">Python</span>
+                                <span class="skill-tag">C++</span>
+                                <span class="skill-tag">ROS</span>
+                                <span class="skill-tag">3D Reconstruction</span>
+                                <span class="skill-tag">Gaussian Splatting</span>
+                                <span class="skill-tag">Isaac Sim</span>
+                                <span class="skill-tag">Gazebo</span>
+                            </div>
+                            <button class="flip-back" style="margin-top:1rem;align-self:flex-end;">⬅ Back</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <!-- 2024 Projects -->
         <section class="year-section">
             <div class="year-header">
                 <h2 class="year-title">2024</h2>
                 <p class="year-subtitle">Advanced TinyML and Terrain Exploration</p>
             </div>
-            
+
             <div class="tabloids-grid">
                 <div class="tabloid-container">
                     <div class="tabloid" onclick="flipTabloid(this)">
@@ -619,7 +668,7 @@
                             </div>
                             <button class="flip-hint">Learn More</button>
                         </div>
-                        
+
                         <div class="tabloid-face tabloid-back">
                             <h4>Project Details</h4>
                             <div class="tabloid-description">
