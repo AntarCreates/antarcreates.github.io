@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Achievements | Antar Mazumder <Æ</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #000011;
+            color: #ffffff;
+            overflow-x: hidden;
+            cursor: none;
+            line-height: 1.6;
+        }
+
+        /* Show default cursor on clickable elements */
+        a, button, .clickable {
+            cursor: pointer !important;
+        }
+
+        /* Custom UFO Cursor */
+        .cursor {
+            position: fixed;
+            width: 30px;
+            height: 30px;
+            pointer-events: none;
+            z-index: 10000;
+            transition: opacity 0.2s ease, transform 0.1s ease;
+            font-size: 20px;
+            transform: translate(-50%, -50%);
+        }
+
+        /* Navigation Menu - Sidebar Style */
+        .nav-container {
+            position: fixed;
+            top: 50%;
+            left: 0;
+            transform: translateY(-50%);
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .nav-menu {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            transform: translateX(-80%);
+            transition: transform 0.3s ease;
+        }
+
+        .nav-menu:hover {
+            transform: translateX(0);
+        }
+
+        .nav-indicator {
+            position: absolute;
+            right: -15px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 30px;
+            height: 60px;
+            background: rgba(0, 160, 240, 0.2);
+            border: 2px solid rgba(0, 160, 240, 0.5);
+            border-left: none;
+            border-radius: 0 15px 15px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .nav-indicator::before {
+            content: '¶';
+            color: #00A0F0;
+            font-size: 12px;
+            transition: transform 0.3s ease;
+        }
+
+        .nav-menu:hover .nav-indicator::before {
+            transform: rotate(180deg);
+        }
+
+        .nav-menu:hover .nav-indicator {
+            background: rgba(0, 160, 240, 0.3);
+            border-color: #00A0F0;
+        }
+
+        .nav-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            padding: 20px 15px;
+            background: rgba(0, 11, 17, 0.9);
+            border: 2px solid rgba(0, 160, 240, 0.3);
+            border-left: none;
+            border-radius: 0 20px 20px 0;
+            backdrop-filter: blur(15px);
+            box-shadow: 5px 0 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .nav-btn {
+            padding: 12px 20px;
+            background: rgba(0, 160, 240, 0.1);
+            border: 2px solid rgba(0, 160, 240, 0.3);
+            border-radius: 25px;
+            color: #ffffff;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            min-width: 140px;
+            text-align: center;
+            display: block;
+        }
+
+        .nav-btn:hover {
+            background: rgba(0, 160, 240, 0.25);
+            border-color: #00A0F0;
+            transform: translateX(10px);
+            box-shadow: 0 5px 20px rgba(0, 160, 240, 0.4);
+        }
+
+        .nav-btn.active {
+            background: rgba(0, 160, 240, 0.4);
+            border-color: #00A0F0;
+            box-shadow: 0 0 15px rgba(0, 160, 240, 0.6);
+        }
+
+        /* Space Background */
+        .space-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(ellipse at bottom, #1B2735 0%, #090A0F 100%);
+            z-index: -3;
+        }
+
+        /* Stars Animation */
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+        }
+
+        .star {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 2s infinite alternate;
+        }
+
+        @keyframes twinkle {
+            0% { opacity: 0.3; transform: scale(1); }
+            100% { opacity: 1; transform: scale(1.2); }
+        }
+
+        /* Floating Particles */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: #00A0F0;
+            border-radius: 50%;
+            animation: float 6s infinite linear;
+            box-shadow: 0 0 10px #00A0F0;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-100px) rotate(360deg); opacity: 0; }
+        }
+
+        /* Main Container */
+        .container {
+            min-height: 100vh;
+            padding: 4rem 2rem 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Page Header */
+        .page-header {
+            text-align: center;
+            margin-bottom: 4rem;
+            opacity: 0;
+            animation: fadeInUp 1s ease 0.5s forwards;
+        }
+
+        .page-title {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, #FFD700, #FFA500, #FF8C00);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradient-shift 3s ease infinite;
+        }
+
+        @keyframes gradient-shift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .page-subtitle {
+            font-size: 1.2rem;
+            color: #FFD700;
+            opacity: 0.8;
+        }
+
+        /* Achievement Section */
+        .achievement-section {
+            margin-bottom: 4rem;
+            opacity: 0;
+            animation: fadeInUp 1s ease forwards;
+        }
+
+        .achievement-section:nth-child(2) { animation-delay: 0.7s; }
+        .achievement-section:nth-child(3) { animation-delay: 0.9s; }
+        .achievement-section:nth-child(4) { animation-delay: 1.1s; }
+        .achievement-section:nth-child(5) { animation-delay: 1.3s; }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #FFD700;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+        }
+
+        .section-subtitle {
+            font-size: 1rem;
+            color: #FFA500;
+            opacity: 0.8;
+        }
+
+        /* Achievement Cards */
+        .achievement-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .achievement-card {
+            background: rgba(255, 215, 0, 0.05);
+            border: 2px solid rgba(255, 215, 0, 0.2);
+            border-radius: 20px;
+            padding: 2rem;
+            backdrop-filter: blur(15px);
+            box-shadow: 0 15px 35px rgba(255, 215, 0, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .achievement-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 215, 0, 0.1), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .achievement-card:hover::before {
+            left: 100%;
+        }
+
+        .achievement-card:hover {
+            border-color: #FFD700;
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(255, 215, 0, 0.2);
+        }
+
+        .card-icon {
+            font-size: 3rem;
+            text-align: center;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .card-year {
+            display: inline-block;
+            padding: 6px 12px;
+            background: linear-gradient(45deg, #FFD700, #FFA500);
+            color: #000011;
+            font-weight: 700;
+            font-size: 0.8rem;
+            border-radius: 15px;
+            margin-bottom: 1rem;
+        }
+
+        .card-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, #FFD700, #FFA500);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradient-shift 3s ease infinite;
+        }
+
+        .card-description {
+            color: #cccccc;
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
+
+        .card-organization {
+            color: #FFA500;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .highlight-card {
+            background: rgba(255, 215, 0, 0.1);
+            border: 3px solid rgba(255, 215, 0, 0.4);
+            position: relative;
+        }
+
+        .highlight-card::after {
+            content: 'P HIGHLIGHT';
+            position: absolute;
+            top: -12px;
+            right: 20px;
+            background: linear-gradient(45deg, #FFD700, #FFA500);
+            color: #000011;
+            padding: 4px 12px;
+            border-radius: 10px;
+            font-size: 0.7rem;
+            font-weight: 700;
+        }
+
+        /* Timeline Achievement */
+        .timeline-achievement {
+            display: flex;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: rgba(255, 215, 0, 0.05);
+            border-left: 4px solid #FFD700;
+            border-radius: 0 15px 15px 0;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .timeline-achievement:hover {
+            background: rgba(255, 215, 0, 0.1);
+            transform: translateX(10px);
+        }
+
+        .timeline-year {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #FFD700;
+            margin-right: 2rem;
+            min-width: 80px;
+        }
+
+        .timeline-content h3 {
+            color: #ffffff;
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .timeline-content p {
+            color: #cccccc;
+            margin-bottom: 0.3rem;
+        }
+
+        .timeline-organization {
+            color: #FFA500;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 2rem 1rem;
+            }
+
+            .nav-container {
+                top: 20px;
+                left: 0;
+                transform: none;
+            }
+
+            .nav-menu {
+                transform: translateX(-85%);
+            }
+
+            .achievement-cards {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .achievement-card {
+                padding: 1.5rem;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .timeline-achievement {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .timeline-year {
+                margin-right: 0;
+                margin-bottom: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Custom UFO Cursor -->
+    <div class="cursor">=ø</div>
+
+    <!-- Navigation Menu -->
+    <nav class="nav-container">
+        <div class="nav-menu">
+            <div class="nav-buttons">
+                <a href="index.html" class="nav-btn"><à Home</a>
+                <a href="projects.html" class="nav-btn">=€ Projects</a>
+                <a href="research.html" class="nav-btn">=, Research</a>
+                <a href="activities.html" class="nav-btn">¡ Activities</a>
+                <a href="achievements.html" class="nav-btn active"><Æ Achievements</a>
+                <a href="contact.html" class="nav-btn">=á Contact</a>
+            </div>
+            <div class="nav-indicator"></div>
+        </div>
+    </nav>
+
+    <!-- Space Background -->
+    <div class="space-bg"></div>
+
+    <!-- Stars -->
+    <div class="stars"></div>
+
+    <!-- Floating Particles -->
+    <div class="particles"></div>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Page Header -->
+        <header class="page-header">
+            <h1 class="page-title">Achievements & Awards</h1>
+            <p class="page-subtitle">Recognition for excellence in space robotics and research</p>
+        </header>
+
+        <!-- Major Achievements -->
+        <section class="achievement-section">
+            <div class="section-header">
+                <h2 class="section-title">Major Achievements</h2>
+                <p class="section-subtitle">Outstanding recognition and global rankings</p>
+            </div>
+
+            <div class="achievement-cards">
+                <div class="achievement-card highlight-card">
+                    <div class="card-icon"><</div>
+                    <div class="card-year">2023</div>
+                    <h3 class="card-title">11th Global Position - International Rover Design Challenge</h3>
+                    <p class="card-description">
+                        Led Team Ogrodoot to achieve 11th position globally in the International Rover Design Challenge 2023, competing against teams from around the world in designing multi-robot planetary rover systems.
+                    </p>
+                    <p class="card-organization">Granted by Space Robotics Society (SPROS)</p>
+                </div>
+
+                <div class="achievement-card highlight-card">
+                    <div class="card-icon"><</div>
+                    <div class="card-year">2019</div>
+                    <h3 class="card-title">27th Global Position - European Rover Challenge</h3>
+                    <p class="card-description">
+                        Achieved 27th position globally in the European Rover Challenge (ERC) 2019 as a Control Team Member, demonstrating expertise in robotic control systems for planetary exploration.
+                    </p>
+                    <p class="card-organization">Granted by European Space Foundation (ESF)</p>
+                </div>
+
+                <div class="achievement-card">
+                    <div class="card-icon"><Æ</div>
+                    <div class="card-year">2019</div>
+                    <h3 class="card-title">Champion - GPH Ispat Esho Robot Banai</h3>
+                    <p class="card-description">
+                        Won the RUET Hackathon Round of GPH Ispat Esho Robot Banai competition, showcasing innovative robotics solutions and problem-solving skills.
+                    </p>
+                    <p class="card-organization">Granted by Esho Robot Banai</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Featured Recognition */
+        <section class="achievement-section">
+            <div class="section-header">
+                <h2 class="section-title">Featured Recognition</h2>
+                <p class="section-subtitle">Media coverage and community recognition</p>
+            </div>
+
+            <div class="achievement-cards">
+                <div class="achievement-card">
+                    <div class="card-icon">=ð</div>
+                    <div class="card-year">2025</div>
+                    <h3 class="card-title">ROS News for the Week Feature</h3>
+                    <p class="card-description">
+                        Featured RoSE Terrain Generator project in ROS News for the Week, February 24th, 2025, highlighting breakthrough zero-shot terrain generation technology.
+                    </p>
+                    <p class="card-organization">Featured by ROS Discourse</p>
+                </div>
+
+                <div class="achievement-card">
+                    <div class="card-icon"><¤</div>
+                    <div class="card-year">2025</div>
+                    <h3 class="card-title">Invited Talk - Gazebo Community Meeting</h3>
+                    <p class="card-description">
+                        Presented RoSE Terrain Generator as an invited speaker at the Gazebo Community Meeting, April 30th, 2025, sharing innovative terrain generation techniques with the global robotics community.
+                    </p>
+                    <p class="card-organization">Gazebo Community</p>
+                </div>
+
+                <div class="achievement-card">
+                    <div class="card-icon">=ð</div>
+                    <div class="card-year">2022</div>
+                    <h3 class="card-title">ROS News for the Week Feature</h3>
+                    <p class="card-description">
+                        Featured 3D mapping project for Martian lava cave simulation in ROS News for the Week, January 23rd, 2022, demonstrating innovative approach to planetary exploration.
+                    </p>
+                    <p class="card-organization">Featured by ROS Discourse</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Academic Excellence -->
+        <section class="achievement-section">
+            <div class="section-header">
+                <h2 class="section-title">Academic Excellence</h2>
+                <p class="section-subtitle">Scholarships and academic recognition</p>
+            </div>
+
+            <div class="timeline-achievement">
+                <div class="timeline-year">2023</div>
+                <div class="timeline-content">
+                    <h3>Technical Scholarship - 4th Academic Year</h3>
+                    <p>Awarded for outstanding academic performance in final year of Mechatronics Engineering</p>
+                    <p class="timeline-organization">Rajshahi University of Engineering & Tech. (RUET)</p>
+                </div>
+            </div>
+
+            <div class="timeline-achievement">
+                <div class="timeline-year">2023</div>
+                <div class="timeline-content">
+                    <h3>Technical Scholarship - 3rd Academic Year</h3>
+                    <p>Recognition for exceptional academic achievement and technical excellence</p>
+                    <p class="timeline-organization">Rajshahi University of Engineering & Tech. (RUET)</p>
+                </div>
+            </div>
+
+            <div class="timeline-achievement">
+                <div class="timeline-year">2019</div>
+                <div class="timeline-content">
+                    <h3>Technical Scholarship - 1st Academic Year</h3>
+                    <p>Merit-based scholarship for outstanding performance in first year of engineering studies</p>
+                    <p class="timeline-organization">Rajshahi University of Engineering & Tech. (RUET)</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Professional Certifications -->
+        <section class="achievement-section">
+            <div class="section-header">
+                <h2 class="section-title">Professional Certifications</h2>
+                <p class="section-subtitle">Industry-recognized technical expertise</p>
+            </div>
+
+            <div class="achievement-cards">
+                <div class="achievement-card">
+                    <div class="card-icon"></div>
+                    <div class="card-year">2021</div>
+                    <h3 class="card-title">AI-102: Microsoft Azure AI</h3>
+                    <p class="card-description">
+                        Professional certification in Microsoft Azure AI services, demonstrating expertise in artificial intelligence and cloud computing platforms.
+                    </p>
+                    <p class="card-organization">Certificate issued by Microsoft</p>
+                </div>
+
+                <div class="achievement-card">
+                    <div class="card-icon">™</div>
+                    <div class="card-year">2021</div>
+                    <h3 class="card-title">AZ-104: Microsoft Azure Administrator</h3>
+                    <p class="card-description">
+                        Certified in Microsoft Azure administration, showcasing skills in cloud infrastructure management and deployment.
+                    </p>
+                    <p class="card-organization">Certificate issued by Microsoft</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Research Impact -->
+        <section class="achievement-section">
+            <div class="section-header">
+                <h2 class="section-title">Research Impact</h2>
+                <p class="section-subtitle">Citation metrics and academic influence</p>
+            </div>
+
+            <div class="achievement-cards">
+                <div class="achievement-card highlight-card">
+                    <div class="card-icon">=Ú</div>
+                    <div class="card-year">2023</div>
+                    <h3 class="card-title">114+ Citations - Digital Twins Research</h3>
+                    <p class="card-description">
+                        Achieved significant research impact with 114+ citations for the paper "Towards next generation digital twin in robotics: Trends, scopes, challenges, and future" published in Heliyon.
+                    </p>
+                    <p class="card-organization">Heliyon Journal</p>
+                </div>
+
+                <div class="achievement-card">
+                    <div class="card-icon"><“</div>
+                    <div class="card-year">2023</div>
+                    <h3 class="card-title">CGPA 3.53/4.00</h3>
+                    <p class="card-description">
+                        Graduated with strong academic performance in Mechatronics Engineering, demonstrating consistent excellence throughout the program.
+                    </p>
+                    <p class="card-organization">Rajshahi University of Engineering & Tech. (RUET)</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // Custom UFO Cursor Management
+        document.addEventListener('DOMContentLoaded', function() {
+            const cursor = document.querySelector('.cursor');
+
+            document.addEventListener('mousemove', (e) => {
+                cursor.style.left = e.clientX + 'px';
+                cursor.style.top = e.clientY + 'px';
+            });
+
+            // Hide UFO cursor when hovering over clickable elements
+            const clickableElements = document.querySelectorAll('a, button, .clickable');
+            clickableElements.forEach(element => {
+                element.addEventListener('mouseenter', () => {
+                    cursor.style.opacity = '0';
+                });
+                element.addEventListener('mouseleave', () => {
+                    cursor.style.opacity = '1';
+                });
+            });
+
+            // Generate Stars
+            function createStars() {
+                const starsContainer = document.querySelector('.stars');
+                const starCount = 200;
+
+                for (let i = 0; i < starCount; i++) {
+                    const star = document.createElement('div');
+                    star.className = 'star';
+                    star.style.left = Math.random() * 100 + '%';
+                    star.style.top = Math.random() * 100 + '%';
+                    star.style.animationDelay = Math.random() * 2 + 's';
+                    star.style.animationDuration = (Math.random() * 3 + 1) + 's';
+                    starsContainer.appendChild(star);
+                }
+            }
+
+            // Generate Floating Particles
+            function createParticles() {
+                const particlesContainer = document.querySelector('.particles');
+
+                setInterval(() => {
+                    const particle = document.createElement('div');
+                    particle.className = 'particle';
+                    particle.style.left = Math.random() * 100 + '%';
+                    particle.style.animationDuration = (Math.random() * 4 + 4) + 's';
+                    particle.style.animationDelay = Math.random() * 2 + 's';
+                    particlesContainer.appendChild(particle);
+
+                    setTimeout(() => {
+                        particle.remove();
+                    }, 8000);
+                }, 500);
+            }
+
+            // Navigation Management
+            const navButtons = document.querySelectorAll('.nav-btn');
+
+            // Set active button based on current page
+            const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+
+            navButtons.forEach(btn => {
+                const btnHref = btn.getAttribute('href');
+                btn.classList.remove('active');
+
+                if (btnHref === currentPage ||
+                    (currentPage === 'achievements.html' && btnHref === 'achievements.html')) {
+                    btn.classList.add('active');
+                }
+            });
+
+            // Initialize animations
+            createStars();
+            createParticles();
+
+            // Smooth scroll behavior for internal links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

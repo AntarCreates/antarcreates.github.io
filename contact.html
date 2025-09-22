@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact | Antar Mazumder =á</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #000011;
+            color: #ffffff;
+            overflow-x: hidden;
+            cursor: none;
+            line-height: 1.6;
+        }
+
+        /* Show default cursor on clickable elements */
+        a, button, .clickable {
+            cursor: pointer !important;
+        }
+
+        /* Custom UFO Cursor */
+        .cursor {
+            position: fixed;
+            width: 30px;
+            height: 30px;
+            pointer-events: none;
+            z-index: 10000;
+            transition: opacity 0.2s ease, transform 0.1s ease;
+            font-size: 20px;
+            transform: translate(-50%, -50%);
+        }
+
+        /* Navigation Menu - Sidebar Style */
+        .nav-container {
+            position: fixed;
+            top: 50%;
+            left: 0;
+            transform: translateY(-50%);
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .nav-menu {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            transform: translateX(-80%);
+            transition: transform 0.3s ease;
+        }
+
+        .nav-menu:hover {
+            transform: translateX(0);
+        }
+
+        .nav-indicator {
+            position: absolute;
+            right: -15px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 30px;
+            height: 60px;
+            background: rgba(0, 160, 240, 0.2);
+            border: 2px solid rgba(0, 160, 240, 0.5);
+            border-left: none;
+            border-radius: 0 15px 15px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .nav-indicator::before {
+            content: '¶';
+            color: #00A0F0;
+            font-size: 12px;
+            transition: transform 0.3s ease;
+        }
+
+        .nav-menu:hover .nav-indicator::before {
+            transform: rotate(180deg);
+        }
+
+        .nav-menu:hover .nav-indicator {
+            background: rgba(0, 160, 240, 0.3);
+            border-color: #00A0F0;
+        }
+
+        .nav-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            padding: 20px 15px;
+            background: rgba(0, 11, 17, 0.9);
+            border: 2px solid rgba(0, 160, 240, 0.3);
+            border-left: none;
+            border-radius: 0 20px 20px 0;
+            backdrop-filter: blur(15px);
+            box-shadow: 5px 0 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .nav-btn {
+            padding: 12px 20px;
+            background: rgba(0, 160, 240, 0.1);
+            border: 2px solid rgba(0, 160, 240, 0.3);
+            border-radius: 25px;
+            color: #ffffff;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            min-width: 140px;
+            text-align: center;
+            display: block;
+        }
+
+        .nav-btn:hover {
+            background: rgba(0, 160, 240, 0.25);
+            border-color: #00A0F0;
+            transform: translateX(10px);
+            box-shadow: 0 5px 20px rgba(0, 160, 240, 0.4);
+        }
+
+        .nav-btn.active {
+            background: rgba(0, 160, 240, 0.4);
+            border-color: #00A0F0;
+            box-shadow: 0 0 15px rgba(0, 160, 240, 0.6);
+        }
+
+        /* Space Background */
+        .space-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(ellipse at bottom, #1B2735 0%, #090A0F 100%);
+            z-index: -3;
+        }
+
+        /* Stars Animation */
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+        }
+
+        .star {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 2s infinite alternate;
+        }
+
+        @keyframes twinkle {
+            0% { opacity: 0.3; transform: scale(1); }
+            100% { opacity: 1; transform: scale(1.2); }
+        }
+
+        /* Floating Particles */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: #00A0F0;
+            border-radius: 50%;
+            animation: float 6s infinite linear;
+            box-shadow: 0 0 10px #00A0F0;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-100px) rotate(360deg); opacity: 0; }
+        }
+
+        /* Main Container */
+        .container {
+            min-height: 100vh;
+            padding: 4rem 2rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Page Header */
+        .page-header {
+            text-align: center;
+            margin-bottom: 4rem;
+            opacity: 0;
+            animation: fadeInUp 1s ease 0.5s forwards;
+        }
+
+        .page-title {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, #00A0F0, #66fcf1, #45a29e);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradient-shift 3s ease infinite;
+        }
+
+        @keyframes gradient-shift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .page-subtitle {
+            font-size: 1.2rem;
+            color: #66fcf1;
+            opacity: 0.8;
+        }
+
+        /* Contact Section */
+        .contact-section {
+            margin-bottom: 4rem;
+            opacity: 0;
+            animation: fadeInUp 1s ease forwards;
+        }
+
+        .contact-section:nth-child(2) { animation-delay: 0.7s; }
+        .contact-section:nth-child(3) { animation-delay: 0.9s; }
+        .contact-section:nth-child(4) { animation-delay: 1.1s; }
+
+        /* Contact Grid */
+        .contact-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 3rem;
+            margin-bottom: 3rem;
+        }
+
+        /* Contact Card */
+        .contact-card {
+            background: rgba(0, 160, 240, 0.05);
+            border: 2px solid rgba(0, 160, 240, 0.2);
+            border-radius: 20px;
+            padding: 2.5rem;
+            backdrop-filter: blur(15px);
+            box-shadow: 0 15px 35px rgba(0, 160, 240, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            text-align: center;
+        }
+
+        .contact-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.05), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .contact-card:hover::before {
+            left: 100%;
+        }
+
+        .contact-card:hover {
+            border-color: #00A0F0;
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 160, 240, 0.2);
+        }
+
+        .card-icon {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            display: block;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, #00A0F0, #66fcf1);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradient-shift 3s ease infinite;
+        }
+
+        .card-content {
+            color: #cccccc;
+            margin-bottom: 1.5rem;
+            line-height: 1.8;
+        }
+
+        .contact-link {
+            display: inline-block;
+            padding: 12px 24px;
+            background: rgba(0, 160, 240, 0.2);
+            border: 2px solid rgba(0, 160, 240, 0.4);
+            border-radius: 25px;
+            color: #ffffff;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin: 0.5rem;
+        }
+
+        .contact-link:hover {
+            background: rgba(0, 160, 240, 0.3);
+            border-color: #00A0F0;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 160, 240, 0.4);
+        }
+
+        /* Professional Links */
+        .professional-links {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .link-card {
+            background: rgba(0, 160, 240, 0.05);
+            border: 2px solid rgba(0, 160, 240, 0.2);
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .link-card:hover {
+            border-color: #00A0F0;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0, 160, 240, 0.3);
+        }
+
+        .link-icon {
+            width: 40px;
+            height: 40px;
+            margin: 0 auto 1rem;
+            filter: brightness(0) invert(1);
+        }
+
+        .link-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #ffffff;
+        }
+
+        .link-description {
+            color: #cccccc;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Location Card */
+        .location-card {
+            background: rgba(102, 252, 241, 0.05);
+            border: 2px solid rgba(102, 252, 241, 0.2);
+            border-radius: 20px;
+            padding: 2.5rem;
+            text-align: center;
+            backdrop-filter: blur(15px);
+            box-shadow: 0 15px 35px rgba(102, 252, 241, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .location-card:hover {
+            border-color: #66fcf1;
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(102, 252, 241, 0.2);
+        }
+
+        .location-icon {
+            font-size: 3rem;
+            color: #66fcf1;
+            margin-bottom: 1.5rem;
+        }
+
+        .location-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #66fcf1;
+            margin-bottom: 1rem;
+        }
+
+        .location-details {
+            color: #cccccc;
+            line-height: 1.8;
+        }
+
+        /* References Section */
+        .references-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 2rem;
+        }
+
+        .reference-card {
+            background: rgba(69, 162, 158, 0.05);
+            border: 2px solid rgba(69, 162, 158, 0.2);
+            border-radius: 20px;
+            padding: 2rem;
+            backdrop-filter: blur(15px);
+            box-shadow: 0 15px 35px rgba(69, 162, 158, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .reference-card:hover {
+            border-color: #45a29e;
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(69, 162, 158, 0.2);
+        }
+
+        .reference-name {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 0.5rem;
+        }
+
+        .reference-title {
+            color: #45a29e;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .reference-details {
+            color: #cccccc;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        .reference-email {
+            color: #66fcf1;
+            font-weight: 600;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 2rem 1rem;
+            }
+
+            .nav-container {
+                top: 20px;
+                left: 0;
+                transform: none;
+            }
+
+            .nav-menu {
+                transform: translateX(-85%);
+            }
+
+            .contact-grid, .professional-links, .references-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .contact-card, .location-card, .reference-card {
+                padding: 2rem 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Custom UFO Cursor -->
+    <div class="cursor">=ø</div>
+
+    <!-- Navigation Menu -->
+    <nav class="nav-container">
+        <div class="nav-menu">
+            <div class="nav-buttons">
+                <a href="index.html" class="nav-btn"><à Home</a>
+                <a href="projects.html" class="nav-btn">=€ Projects</a>
+                <a href="research.html" class="nav-btn">=, Research</a>
+                <a href="activities.html" class="nav-btn">¡ Activities</a>
+                <a href="achievements.html" class="nav-btn"><Æ Achievements</a>
+                <a href="contact.html" class="nav-btn active">=á Contact</a>
+            </div>
+            <div class="nav-indicator"></div>
+        </div>
+    </nav>
+
+    <!-- Space Background -->
+    <div class="space-bg"></div>
+
+    <!-- Stars -->
+    <div class="stars"></div>
+
+    <!-- Floating Particles -->
+    <div class="particles"></div>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Page Header -->
+        <header class="page-header">
+            <h1 class="page-title">Contact & Connect</h1>
+            <p class="page-subtitle">Let's collaborate on space robotics and autonomous exploration</p>
+        </header>
+
+        <!-- Contact Information -->
+        <section class="contact-section">
+            <div class="contact-grid">
+                <div class="contact-card">
+                    <div class="card-icon">=ç</div>
+                    <h3 class="card-title">Email</h3>
+                    <div class="card-content">
+                        <p><strong>Academic:</strong> antar_mazumder@mines.edu</p>
+                        <p><strong>Personal:</strong> antar.mte@gmail.com</p>
+                    </div>
+                    <a href="mailto:antar_mazumder@mines.edu" class="contact-link">Send Email</a>
+                </div>
+
+                <div class="location-card">
+                    <div class="location-icon">=Í</div>
+                    <h3 class="location-title">Current Location</h3>
+                    <div class="location-details">
+                        <p><strong>Address:</strong> 1003-C, Golden Park Dr.</p>
+                        <p>Golden, CO - 80403</p>
+                        <p>United States</p>
+                        <br>
+                        <p><strong>Institution:</strong></p>
+                        <p>Colorado School of Mines</p>
+                        <p>Robotic Space Exploration (RoSE) Lab</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Professional Links -->
+        <section class="contact-section">
+            <div class="professional-links">
+                <a href="https://github.com/AntarCreates" class="link-card" target="_blank">
+                    <img src="files/git.png" alt="GitHub" class="link-icon">
+                    <h4 class="link-title">GitHub</h4>
+                    <p class="link-description">Open-source projects and code repositories</p>
+                    <div class="contact-link">@AntarCreates</div>
+                </a>
+
+                <a href="https://www.linkedin.com/in/antarmazumder" class="link-card" target="_blank">
+                    <img src="files/li.png" alt="LinkedIn" class="link-icon">
+                    <h4 class="link-title">LinkedIn</h4>
+                    <p class="link-description">Professional network and career updates</p>
+                    <div class="contact-link">/in/antarmazumder</div>
+                </a>
+
+                <a href="https://scholar.google.com/citations?user=BfGfzocAAAAJ" class="link-card" target="_blank">
+                    <img src="files/gs.png" alt="Google Scholar" class="link-icon">
+                    <h4 class="link-title">Google Scholar</h4>
+                    <p class="link-description">Research publications and citations</p>
+                    <div class="contact-link">View Profile</div>
+                </a>
+
+                <a href="https://sites.google.com/view/antarbio" class="link-card" target="_blank">
+                    <div class="card-icon" style="font-size: 2.5rem; margin-bottom: 1rem;"><</div>
+                    <h4 class="link-title">Personal Website</h4>
+                    <p class="link-description">Detailed bio and project portfolio</p>
+                    <div class="contact-link">Visit Site</div>
+                </a>
+            </div>
+        </section>
+
+        <!-- References -->
+        <section class="contact-section">
+            <div class="contact-grid">
+                <div class="contact-card">
+                    <div class="card-icon">=e</div>
+                    <h3 class="card-title">References</h3>
+                    <div class="card-content">
+                        <p>Professional references available upon request for research collaborations, academic opportunities, and professional inquiries.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="references-grid">
+                <div class="reference-card">
+                    <h4 class="reference-name">Dr. Frances Zhu</h4>
+                    <p class="reference-title">PhD Thesis Supervisor, Assistant Professor</p>
+                    <div class="reference-details">
+                        <p>Department of Mechanical Engineering</p>
+                        <p>Affiliated Faculty, Robotics and Space Resources Programs</p>
+                        <p>Colorado School of Mines, Golden, CO, USA</p>
+                    </div>
+                    <p class="reference-email">frankie.zhu@mines.edu</p>
+                </div>
+
+                <div class="reference-card">
+                    <h4 class="reference-name">Mrs. Zinat Tasneem</h4>
+                    <p class="reference-title">Undergraduate Thesis Supervisor, Assistant Professor</p>
+                    <div class="reference-details">
+                        <p>Department of Mechatronics Engineering</p>
+                        <p>Rajshahi University of Engineering and Technology (RUET)</p>
+                        <p>Rajshahi, Bangladesh</p>
+                    </div>
+                    <p class="reference-email">zinattasneem@mte.ruet.ac.bd</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Research Collaboration -->
+        <section class="contact-section">
+            <div class="contact-grid">
+                <div class="contact-card">
+                    <div class="card-icon">></div>
+                    <h3 class="card-title">Research Collaboration</h3>
+                    <div class="card-content">
+                        <p>Interested in collaborating on:</p>
+                        <ul style="text-align: left; margin: 1rem 0; padding-left: 2rem;">
+                            <li>Space robotics and planetary exploration</li>
+                            <li>Digital twin technologies for robotics</li>
+                            <li>Autonomous navigation in extreme environments</li>
+                            <li>Multi-robot systems and swarm robotics</li>
+                            <li>Robot perception and SLAM</li>
+                        </ul>
+                    </div>
+                    <a href="mailto:antar_mazumder@mines.edu?subject=Research Collaboration Inquiry" class="contact-link">Discuss Research</a>
+                </div>
+
+                <div class="contact-card">
+                    <div class="card-icon"><“</div>
+                    <h3 class="card-title">Academic Opportunities</h3>
+                    <div class="card-content">
+                        <p>Open to discussing:</p>
+                        <ul style="text-align: left; margin: 1rem 0; padding-left: 2rem;">
+                            <li>Guest lectures and presentations</li>
+                            <li>Workshop participation</li>
+                            <li>Conference presentations</li>
+                            <li>Peer review opportunities</li>
+                            <li>Industry partnerships</li>
+                        </ul>
+                    </div>
+                    <a href="mailto:antar_mazumder@mines.edu?subject=Academic Opportunity" class="contact-link">Get in Touch</a>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // Custom UFO Cursor Management
+        document.addEventListener('DOMContentLoaded', function() {
+            const cursor = document.querySelector('.cursor');
+
+            document.addEventListener('mousemove', (e) => {
+                cursor.style.left = e.clientX + 'px';
+                cursor.style.top = e.clientY + 'px';
+            });
+
+            // Hide UFO cursor when hovering over clickable elements
+            const clickableElements = document.querySelectorAll('a, button, .clickable');
+            clickableElements.forEach(element => {
+                element.addEventListener('mouseenter', () => {
+                    cursor.style.opacity = '0';
+                });
+                element.addEventListener('mouseleave', () => {
+                    cursor.style.opacity = '1';
+                });
+            });
+
+            // Generate Stars
+            function createStars() {
+                const starsContainer = document.querySelector('.stars');
+                const starCount = 200;
+
+                for (let i = 0; i < starCount; i++) {
+                    const star = document.createElement('div');
+                    star.className = 'star';
+                    star.style.left = Math.random() * 100 + '%';
+                    star.style.top = Math.random() * 100 + '%';
+                    star.style.animationDelay = Math.random() * 2 + 's';
+                    star.style.animationDuration = (Math.random() * 3 + 1) + 's';
+                    starsContainer.appendChild(star);
+                }
+            }
+
+            // Generate Floating Particles
+            function createParticles() {
+                const particlesContainer = document.querySelector('.particles');
+
+                setInterval(() => {
+                    const particle = document.createElement('div');
+                    particle.className = 'particle';
+                    particle.style.left = Math.random() * 100 + '%';
+                    particle.style.animationDuration = (Math.random() * 4 + 4) + 's';
+                    particle.style.animationDelay = Math.random() * 2 + 's';
+                    particlesContainer.appendChild(particle);
+
+                    setTimeout(() => {
+                        particle.remove();
+                    }, 8000);
+                }, 500);
+            }
+
+            // Navigation Management
+            const navButtons = document.querySelectorAll('.nav-btn');
+
+            // Set active button based on current page
+            const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+
+            navButtons.forEach(btn => {
+                const btnHref = btn.getAttribute('href');
+                btn.classList.remove('active');
+
+                if (btnHref === currentPage ||
+                    (currentPage === 'contact.html' && btnHref === 'contact.html')) {
+                    btn.classList.add('active');
+                }
+            });
+
+            // Initialize animations
+            createStars();
+            createParticles();
+
+            // Smooth scroll behavior for internal links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

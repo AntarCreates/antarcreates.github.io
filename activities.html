@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Activities | Antar Mazumder ¡</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #000011;
+            color: #ffffff;
+            overflow-x: hidden;
+            cursor: none;
+            line-height: 1.6;
+        }
+
+        /* Show default cursor on clickable elements */
+        a, button, .clickable {
+            cursor: pointer !important;
+        }
+
+        /* Custom UFO Cursor */
+        .cursor {
+            position: fixed;
+            width: 30px;
+            height: 30px;
+            pointer-events: none;
+            z-index: 10000;
+            transition: opacity 0.2s ease, transform 0.1s ease;
+            font-size: 20px;
+            transform: translate(-50%, -50%);
+        }
+
+        /* Navigation Menu - Sidebar Style */
+        .nav-container {
+            position: fixed;
+            top: 50%;
+            left: 0;
+            transform: translateY(-50%);
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .nav-menu {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            transform: translateX(-80%);
+            transition: transform 0.3s ease;
+        }
+
+        .nav-menu:hover {
+            transform: translateX(0);
+        }
+
+        .nav-indicator {
+            position: absolute;
+            right: -15px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 30px;
+            height: 60px;
+            background: rgba(0, 160, 240, 0.2);
+            border: 2px solid rgba(0, 160, 240, 0.5);
+            border-left: none;
+            border-radius: 0 15px 15px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .nav-indicator::before {
+            content: '¶';
+            color: #00A0F0;
+            font-size: 12px;
+            transition: transform 0.3s ease;
+        }
+
+        .nav-menu:hover .nav-indicator::before {
+            transform: rotate(180deg);
+        }
+
+        .nav-menu:hover .nav-indicator {
+            background: rgba(0, 160, 240, 0.3);
+            border-color: #00A0F0;
+        }
+
+        .nav-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            padding: 20px 15px;
+            background: rgba(0, 11, 17, 0.9);
+            border: 2px solid rgba(0, 160, 240, 0.3);
+            border-left: none;
+            border-radius: 0 20px 20px 0;
+            backdrop-filter: blur(15px);
+            box-shadow: 5px 0 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .nav-btn {
+            padding: 12px 20px;
+            background: rgba(0, 160, 240, 0.1);
+            border: 2px solid rgba(0, 160, 240, 0.3);
+            border-radius: 25px;
+            color: #ffffff;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            min-width: 140px;
+            text-align: center;
+            display: block;
+        }
+
+        .nav-btn:hover {
+            background: rgba(0, 160, 240, 0.25);
+            border-color: #00A0F0;
+            transform: translateX(10px);
+            box-shadow: 0 5px 20px rgba(0, 160, 240, 0.4);
+        }
+
+        .nav-btn.active {
+            background: rgba(0, 160, 240, 0.4);
+            border-color: #00A0F0;
+            box-shadow: 0 0 15px rgba(0, 160, 240, 0.6);
+        }
+
+        /* Space Background */
+        .space-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(ellipse at bottom, #1B2735 0%, #090A0F 100%);
+            z-index: -3;
+        }
+
+        /* Stars Animation */
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+        }
+
+        .star {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 2s infinite alternate;
+        }
+
+        @keyframes twinkle {
+            0% { opacity: 0.3; transform: scale(1); }
+            100% { opacity: 1; transform: scale(1.2); }
+        }
+
+        /* Floating Particles */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: #00A0F0;
+            border-radius: 50%;
+            animation: float 6s infinite linear;
+            box-shadow: 0 0 10px #00A0F0;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-100px) rotate(360deg); opacity: 0; }
+        }
+
+        /* Main Container */
+        .container {
+            min-height: 100vh;
+            padding: 4rem 2rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        /* Coming Soon */
+        .coming-soon {
+            opacity: 0;
+            animation: fadeInUp 1s ease 0.5s forwards;
+        }
+
+        .page-title {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, #00A0F0, #66fcf1, #45a29e);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradient-shift 3s ease infinite;
+        }
+
+        @keyframes gradient-shift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .subtitle {
+            font-size: 1.5rem;
+            color: #66fcf1;
+            margin-bottom: 2rem;
+        }
+
+        .description {
+            font-size: 1.1rem;
+            color: #cccccc;
+            max-width: 600px;
+            margin-bottom: 3rem;
+            line-height: 1.8;
+        }
+
+        .rocket {
+            font-size: 5rem;
+            margin-bottom: 2rem;
+            animation: float-rocket 3s ease-in-out infinite;
+        }
+
+        @keyframes float-rocket {
+            0%, 100% { transform: translateY(0px) rotate(-5deg); }
+            50% { transform: translateY(-20px) rotate(5deg); }
+        }
+
+        .back-home {
+            display: inline-block;
+            padding: 15px 35px;
+            background: linear-gradient(45deg, #00A0F0, #0080C7);
+            border: none;
+            border-radius: 50px;
+            color: #ffffff;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0, 160, 240, 0.3);
+        }
+
+        .back-home::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .back-home:hover::before {
+            left: 100%;
+        }
+
+        .back-home:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 15px 35px rgba(0, 160, 240, 0.4);
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 2rem 1rem;
+            }
+
+            .nav-container {
+                top: 20px;
+                left: 0;
+                transform: none;
+            }
+
+            .nav-menu {
+                transform: translateX(-85%);
+            }
+
+            .rocket {
+                font-size: 3rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Custom UFO Cursor -->
+    <div class="cursor">=ø</div>
+
+    <!-- Navigation Menu -->
+    <nav class="nav-container">
+        <div class="nav-menu">
+            <div class="nav-buttons">
+                <a href="index.html" class="nav-btn"><à Home</a>
+                <a href="projects.html" class="nav-btn">=€ Projects</a>
+                <a href="research.html" class="nav-btn">=, Research</a>
+                <a href="activities.html" class="nav-btn active">¡ Activities</a>
+                <a href="achievements.html" class="nav-btn"><Æ Achievements</a>
+                <a href="contact.html" class="nav-btn">=á Contact</a>
+            </div>
+            <div class="nav-indicator"></div>
+        </div>
+    </nav>
+
+    <!-- Space Background -->
+    <div class="space-bg"></div>
+
+    <!-- Stars -->
+    <div class="stars"></div>
+
+    <!-- Floating Particles -->
+    <div class="particles"></div>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="coming-soon">
+            <div class="rocket">=€</div>
+            <h1 class="page-title">Activities & Engagement</h1>
+            <p class="subtitle">Mission Control: Content Loading...</p>
+            <p class="description">
+                This section is currently being enhanced with comprehensive information about professional activities,
+                community engagement, workshops, conferences, and collaborative projects. Check back soon for updates
+                on speaking engagements, mentorship activities, and contributions to the robotics community.
+            </p>
+            <a href="index.html" class="back-home"><à Return to Mission Control</a>
+        </div>
+    </div>
+
+    <script>
+        // Custom UFO Cursor Management
+        document.addEventListener('DOMContentLoaded', function() {
+            const cursor = document.querySelector('.cursor');
+
+            document.addEventListener('mousemove', (e) => {
+                cursor.style.left = e.clientX + 'px';
+                cursor.style.top = e.clientY + 'px';
+            });
+
+            // Hide UFO cursor when hovering over clickable elements
+            const clickableElements = document.querySelectorAll('a, button, .clickable');
+            clickableElements.forEach(element => {
+                element.addEventListener('mouseenter', () => {
+                    cursor.style.opacity = '0';
+                });
+                element.addEventListener('mouseleave', () => {
+                    cursor.style.opacity = '1';
+                });
+            });
+
+            // Generate Stars
+            function createStars() {
+                const starsContainer = document.querySelector('.stars');
+                const starCount = 200;
+
+                for (let i = 0; i < starCount; i++) {
+                    const star = document.createElement('div');
+                    star.className = 'star';
+                    star.style.left = Math.random() * 100 + '%';
+                    star.style.top = Math.random() * 100 + '%';
+                    star.style.animationDelay = Math.random() * 2 + 's';
+                    star.style.animationDuration = (Math.random() * 3 + 1) + 's';
+                    starsContainer.appendChild(star);
+                }
+            }
+
+            // Generate Floating Particles
+            function createParticles() {
+                const particlesContainer = document.querySelector('.particles');
+
+                setInterval(() => {
+                    const particle = document.createElement('div');
+                    particle.className = 'particle';
+                    particle.style.left = Math.random() * 100 + '%';
+                    particle.style.animationDuration = (Math.random() * 4 + 4) + 's';
+                    particle.style.animationDelay = Math.random() * 2 + 's';
+                    particlesContainer.appendChild(particle);
+
+                    setTimeout(() => {
+                        particle.remove();
+                    }, 8000);
+                }, 500);
+            }
+
+            // Navigation Management
+            const navButtons = document.querySelectorAll('.nav-btn');
+
+            // Set active button based on current page
+            const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+
+            navButtons.forEach(btn => {
+                const btnHref = btn.getAttribute('href');
+                btn.classList.remove('active');
+
+                if (btnHref === currentPage ||
+                    (currentPage === 'activities.html' && btnHref === 'activities.html')) {
+                    btn.classList.add('active');
+                }
+            });
+
+            // Initialize animations
+            createStars();
+            createParticles();
+        });
+    </script>
+</body>
+</html>
